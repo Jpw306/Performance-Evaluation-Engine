@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 
 export async function GET() {
   const data = {
-    username: "devnate",
+    username: 'devnate',
     commits: 43,
     commitRate: 0.78,
   };

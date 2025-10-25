@@ -2,8 +2,8 @@ import { mockPlayers } from "@/lib/mockData";
 
 export default function LeaderboardTable() {
   return (
-    <table className="w-full border-collapse border border-supercell-gray text-center">
-      <thead className="bg-supercell-black text-supercell-yellow font-headline uppercase tracking-tightest">
+    <table className='w-full border-collapse border border-supercell-gray text-center'>
+      <thead className='bg-supercell-black text-supercell-yellow font-headline uppercase tracking-tightest'>
         <tr>
           <th className="p-3">Rank</th>
           <th className="p-3">Player</th>
