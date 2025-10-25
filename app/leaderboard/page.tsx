@@ -1,5 +1,5 @@
-import LeaderboardTable from "@/components/LeaderboardTable";
-import NavBar from "@/components/NavBar";
+import LeaderboardTable from '@/components/LeaderboardTable';
+import NavBar from '@/components/NavBar';
 
 export default function LeaderboardPage() {
   return (
