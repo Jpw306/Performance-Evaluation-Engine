@@ -1,3 +1,5 @@
+/* === GET ALL INFO ASSOCIATED WITH A USER'S CLASH ROYALE ACCOUNT === */
+
 import { NextResponse } from 'next/server';
 import { CLASH_API_BASE_URL } from '@/lib/constants';
 
