@@ -4,16 +4,8 @@ import React, { JSX } from "react";
 
 export default function TestPage(): JSX.Element {
     return (
-        <main
-            style={{
-                display: "flex",
-                minHeight: "100vh",
-                alignItems: "center",
-                justifyContent: "center",
-                fontFamily: "system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial",
-            }}
-        >
-            <h1>Hello World</h1>
+        <main className="flex min-h-screen items-center justify-center bg-clash-dark text-clash-white font-text">
+            <h1 className="text-3xl font-headline text-clash-gold-shadow drop-shadow">Hello World</h1>
         </main>
     );
 }
