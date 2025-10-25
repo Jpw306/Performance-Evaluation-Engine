@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useMemo } from "react";
-import Image from "next/image";
-import { motion } from "framer-motion";
-import { mockUser, mockPlayers as dataPlayers } from "../lib/mockData";
+import { useMemo } from 'react';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
+import { mockUser, mockPlayers as dataPlayers } from '../lib/mockData';
 
 interface Player {
   id: number;

@@ -1,8 +1,8 @@
 export const mockLeaderboard = [
-  { name: "Nate", score: 87, rank: 1, avatar: '/avatars/nate.png' },
-  { name: "Ava", score: 76, rank: 2, avatar: '/avatars/ava.png' },
-  { name: "Leo", score: 65, rank: 3, avatar: '/avatars/leo.png' },
-  { name: "Maya", score: 59, rank: 4, avatar: '/avatars/maya.png' },
+  { name: 'Nate', score: 87, rank: 1, avatar: '/avatars/nate.png' },
+  { name: 'Ava', score: 76, rank: 2, avatar: '/avatars/ava.png' },
+  { name: 'Leo', score: 65, rank: 3, avatar: '/avatars/leo.png' },
+  { name: 'Maya', score: 59, rank: 4, avatar: '/avatars/maya.png' },
 ];
 
 export const mockUser = {

@@ -1,10 +1,10 @@
 export default function TeamSummaryCard() {
   const mockTeam = {
-    name: "HackSquad",
+    name: 'HackSquad',
     members: [
-      { name: "Nate", commits: 15, clashWins: 12 },
-      { name: "Ava", commits: 22, clashWins: 8 },
-      { name: "Leo", commits: 10, clashWins: 15 },
+      { name: 'Nate', commits: 15, clashWins: 12 },
+      { name: 'Ava', commits: 22, clashWins: 8 },
+      { name: 'Leo', commits: 10, clashWins: 15 },
     ],
   };
 

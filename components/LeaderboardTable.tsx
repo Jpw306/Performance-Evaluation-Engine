@@ -1,4 +1,4 @@
-import { mockLeaderboard } from "@/lib/mockData";
+import { mockLeaderboard } from '@/lib/mockData';
 
 export default function LeaderboardTable() {
   return (
