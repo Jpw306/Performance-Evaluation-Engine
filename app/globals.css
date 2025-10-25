@@ -1,26 +1,138 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* -----------------------------
+   Clash Royale (Supercell) Theme
+   ----------------------------- */
+
+/* Font faces */
+@font-face {
+  font-family: 'Clash Royale Bold';
+  src: url('/fonts/Clash_Bold.otf') format('opentype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@font-face {
+  font-family: 'Clash Royale Regular';
+  src: url('/fonts/Clash_Regular.otf') format('opentype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Root variables for consistent usage */
+:root {
+  --font-headline: 'Clash Royale Bold', Impact, sans-serif;
+  --font-text: 'Clash Royale Regular', Helvetica, Arial, sans-serif;
+
+  --clash-black: #181818;
+  --clash-white: #ffffff;
+  --clash-dark: #23272a;
+  --clash-blue: #1a8fe3;
+  --clash-gold: #ffd700;
+  --clash-gold-border: #fcdb21;
+  --clash-gold-shadow:#945021;
+  --clash-gray: #a2a2a2;
+  --clash-light: #f5f6fa;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --clash-black: #0a0a0a;
+    --clash-dark: #1c1c1c;
+    --clash-gray: #888888;
   }
 }
 
+/* Base global styles */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--clash-black);
+  color: var(--clash-light);
+  font-family: var(--font-text);
+}
+
+/* Typography */
+h1, h2, h3, h4 {
+  font-family: var(--font-headline);
+  text-transform: uppercase;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  color: var(--clash-gold);
+}
+
+p, span, li {
+  font-family: var(--font-text);
+  line-height: 1.45;
+  color: var(--clash-light);
+}
+
+/* Optional class-based helpers */
+.headline {
+  font-family: var(--font-headline);
+  text-transform: uppercase;
+  letter-spacing: -0.015em;
+  color: var(--clash-gold);
+}
+
+.subtext {
+  font-family: var(--font-text);
+  color: var(--clash-light);
+  font-size: 0.875rem;
+}
+
+.accent {
+  color: var(--clash-blue);
+}
+
+/* Custom backgrounds */
+.bg-clash-dark {
+  background-color: var(--clash-dark);
+}
+.bg-clash-light {
+  background-color: var(--clash-light);
+}
+.bg-clash-black {
+  background-color: var(--clash-black);
+}
+
+/* Custom borders */
+.border-clash-gray {
+  border-color: var(--clash-gray);
+}
+.border-clash-white {
+  border-color: var(--clash-white);
+}
+.border-clash-gold {
+  border-color: var(--clash-gold);
+}
+
+/* Custom text colors */
+.text-clash-gray {
+  color: var(--clash-gray);
+}
+.text-clash-light {
+  color: var(--clash-light);
+}
+.text-clash-gold {
+  color: var(--clash-gold);
+}
+.text-clash-blue {
+  color: var(--clash-blue);
+}
+.text-clash-white {
+  color: var(--clash-white);
+}
+.text-clash-gold {
+  color: var(--clash-gold);
+}
+.text-clash-gold-shadow {
+  color: var(--clash-gold-shadow);
+}
+.text-clash-gold-border {
+  color: var(--clash-gold-shadow);
+  border-color: var(--clash-gold-border);
+  border-width: 10px;
 }
