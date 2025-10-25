@@ -6,12 +6,12 @@ import "./globals.css";
 const clashHeadline = localFont({
   src: [
     {
-      path: "../public/fonts/clash_bold.otf",
+      path: "../public/fonts/Clash_Bold.otf",
       weight: "700",
       style: "normal",
     },
     {
-      path: "../public/fonts/clash_regular.otf",
+      path: "../public/fonts/Clash_Regular.otf",
       weight: "400",
       style: "normal",
     },
