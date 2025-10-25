@@ -4,11 +4,14 @@ export interface ApiCard {
 }
 
 export interface ApiTeamMember {
-    trophyChange: number;
+    tag: string;
+    crowns: number;
     cards: ApiCard[];
 }
 
 export interface ApiOpponentMember {
+    tag: string;
+    crowns: number;
     cards: ApiCard[];
 }
 
@@ -20,7 +23,9 @@ export interface ApiBattleLog {
 export type MatchOutcome = "Win" | "Loss" | "Draw";
 
 export interface ParsedBattle {
+    myPlayerTag: string;
     myCards: Record<string, number>;
+    opponentPlayerTag: string;
     opponentCards: Record<string, number>;
     matchOutcome: MatchOutcome;
 }
