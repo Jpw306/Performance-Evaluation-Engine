@@ -1,79 +1,99 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
-import { User } from '../../models/user';
+import { useUser } from '../../lib/useUser';
 import Image from 'next/image';
 import { useState } from 'react';
 
 export default function Profile() {
-  const { data: session } = useSession();
+  const { user, loading, error, updateClashRoyaleTag, session } = useUser();
   const [clashRoyaleTag, setClashRoyaleTag] = useState('');
-  const [error, setError] = useState('');
+  const [submitError, setSubmitError] = useState('');
+  const [success, setSuccess] = useState('');
 
   if (!session) {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', fontFamily: 'Arial, sans-serif' }}>
-        <h2>Please sign in to view your profile.</h2>
+      <div className="flex justify-center items-center h-screen bg-gray-100 dark:bg-gray-900">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Please sign in to view your profile.</h2>
       </div>
     );
   }
 
-  const user: User = {
-    name: session.user?.name || 'Unknown',
-    photoIcon: session.user?.image || 'https://via.placeholder.com/150',
-    githubId: session.user?.name || 'Unknown', // Ensure GitHub ID is distinct from name
-    clashRoyaleTag: clashRoyaleTag,
-  };
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-gray-100 dark:bg-gray-900">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Loading...</h2>
+      </div>
+    );
+  }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  if (error || !user) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-gray-100 dark:bg-gray-900">
+        <h2 className="text-2xl font-semibold text-gray-900 dark:text-white">Error loading profile. Please try refreshing the page.</h2>
+      </div>
+    );
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!clashRoyaleTag.trim()) {
-      setError('Clash Royale tag is required.');
+    const tagToSave = clashRoyaleTag || (user?.clashRoyaleTag || '');
+    
+    if (!tagToSave.trim()) {
+      setSubmitError('Clash Royale tag is required.');
       return;
     }
-    setError('');
-    alert(`Clash Royale tag saved: ${clashRoyaleTag}`);
+    
+    setSubmitError('');
+    setSuccess('');
+    
+    const updated = await updateClashRoyaleTag(tagToSave);
+    if (updated) {
+      setSuccess('Clash Royale tag updated successfully!');
+    } else {
+      setSubmitError('Failed to update Clash Royale tag.');
+    }
   };
 
   return (
-    <main style={{ padding: '2rem', fontFamily: 'Arial, sans-serif', maxWidth: '600px', margin: '0 auto', textAlign: 'center' }}>
-      <h1 style={{ fontSize: '2.5rem', marginBottom: '1rem' }}>Profile</h1>
-      <Image
-        src={user.photoIcon}
-        alt={`${user.name}'s profile picture`}
-        width={150}
-        height={150}
-        style={{ borderRadius: '50%', marginBottom: '1rem' }}
-      />
-      <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem', color: 'var(--foreground)' }}>{user.name}</h2>
-      <p style={{ fontSize: '1rem', color: 'var(--foreground)', marginBottom: '1rem' }}><strong>GitHub ID:</strong> {user.githubId}</p>
-
-      <form onSubmit={handleSubmit} style={{ background: 'var(--background)', padding: '2rem', borderRadius: '12px', boxShadow: '0 6px 10px rgba(0, 0, 0, 0.15)' }}>
-        <label htmlFor='clashRoyaleTag' style={{ display: 'block', fontSize: '1.125rem', marginBottom: '0.75rem', fontWeight: 'bold', color: 'var(--foreground)' }}>
-          Clash Royale Tag:
-        </label>
-        <input
-          type='text'
-          id='clashRoyaleTag'
-          value={clashRoyaleTag}
-          onChange={(e) => setClashRoyaleTag(e.target.value)}
-          style={{
-            padding: '0.875rem',
-            width: '100%',
-            maxWidth: '350px',
-            border: '1px solid var(--foreground)',
-            borderRadius: '6px',
-            marginBottom: '0.75rem',
-            background: 'var(--background)',
-            color: 'var(--foreground)',
-            fontSize: '1rem',
-          }}
+    <main className="p-8 max-w-lg mx-auto text-center bg-gray-50 dark:bg-gray-900 min-h-screen flex flex-col justify-center items-center">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-8 w-full max-w-md">
+        <h1 className="text-4xl font-bold mb-6 text-gray-900 dark:text-white">Profile</h1>
+        <Image
+          src={user.photoIcon || 'https://via.placeholder.com/150'}
+          alt={`${user.name}'s profile picture`}
+          width={150}
+          height={150}
+          className="rounded-full mb-6 mx-auto border-4 border-blue-500 shadow-lg"
         />
-        {error && <p style={{ color: 'red', fontSize: '0.875rem', marginBottom: '0.75rem' }}>{error}</p>}
-        <button type='submit' style={{ padding: '0.875rem 1.75rem', background: '#0070f3', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '1.125rem', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-          Save
-        </button>
-      </form>
+        <h2 className="text-2xl font-semibold mb-2 text-gray-900 dark:text-white">{user.name}</h2>
+        <p className="text-lg text-gray-700 dark:text-gray-300 mb-6">
+          <strong className="text-blue-600 dark:text-blue-400">GitHub Username:</strong> {user.githubUsername}
+        </p>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label htmlFor="clashRoyaleTag" className="block text-xl font-semibold mb-2 text-gray-900 dark:text-white">
+              Clash Royale Tag:
+            </label>
+            <input
+              type="text"
+              id="clashRoyaleTag"
+              value={clashRoyaleTag || (user?.clashRoyaleTag || '')}
+              onChange={(e) => setClashRoyaleTag(e.target.value)}
+              className="w-full p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-white text-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200"
+              placeholder="Enter your tag"
+            />
+          </div>
+          {submitError && <p className="text-red-500 text-sm">{submitError}</p>}
+          {success && <p className="text-green-500 text-sm">{success}</p>}
+          <button
+            type="submit"
+            className="w-full py-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg font-semibold text-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-200"
+          >
+            Save
+          </button>
+        </form>
+      </div>
     </main>
   );
 }
