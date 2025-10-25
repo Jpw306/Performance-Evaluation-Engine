@@ -7,9 +7,9 @@ import {
 } from '@/lib/clash_api_types';
 
 function getMatchOutcome(trophyChange: number): MatchOutcome {
-  if (trophyChange > 0) return "Win";
-  if (trophyChange < 0) return "Loss";
-  return "Draw";
+  if (trophyChange > 0) return 'Win';
+  if (trophyChange < 0) return 'Loss';
+  return 'Draw';
 }
 
 function mapCardsToObject(cardArray: ApiCard[]): Record<string, number> {
