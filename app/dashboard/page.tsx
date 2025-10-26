@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import NavBar from '@/components/NavBar';
@@ -15,9 +16,9 @@ interface GroupCardProps {
 const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
 
     const handleClick = () => {
-        // Redirect to the dashboard
         window.location.href = '/dashboard/' + group.id;
     };
+
     return (
         <Card onClick={handleClick}>
             <br></br>
@@ -40,24 +41,8 @@ const DashTemp = () => {
     const [githubData, setGithubData] = React.useState<any>(null);
     const [clashData, setClashData] = React.useState<any>(null);
     
-    // Add loading states
     const [githubLoading, setGithubLoading] = React.useState(false);
     const [clashLoading, setClashLoading] = React.useState(false);
-
-    const fetchGroupData = async (groupId: string) => {
-        try
-        {
-            const response = await fetch(`/api/group/${groupId}`);
-            if (response.ok) {
-                const groupData = await response.json();
-                return groupData as Group;
-            }
-        } catch (error)
-        {
-            console.error('Error fetching group data:', error);
-        }
-        return null;
-    };
 
     const fetchCommits = async () => {
         if(user?.githubUsername) {
@@ -76,18 +61,18 @@ const DashTemp = () => {
                 }
                 else {
                     console.error('Failed to fetch commit data');
-                    setGithubData(null); // Explicitly set to null on failure
+                    setGithubData(null);
                 }
             }
             catch(error) {
                 console.log('Error getting GitHub data:', error);
-                setGithubData(null); // Explicitly set to null on error
+                setGithubData(null);
             }
             finally {
                 setGithubLoading(false);
             }
         }
-    }
+    };
 
     const fetchClashData = async () => {
         if(user?.clashRoyaleTag) {
@@ -131,22 +116,21 @@ const DashTemp = () => {
     const getClashDisplayText = () => {
         if (clashLoading) return 'Loading...';
         
-        // Fix: Check for both null and undefined
         if (clashData && clashData !== null) {
-            let returnString = "";
+            let returnString = '';
             if (clashData.trophies !== undefined) {
-                returnString += clashData.trophies + " trophies\n";
+                returnString += clashData.trophies + ' trophies\n';
             }
             if (clashData.wins !== undefined) {
-                returnString += clashData.wins + " wins\n";
+                returnString += clashData.wins + ' wins\n';
             }
             if (clashData.losses !== undefined) {
-                returnString += clashData.losses + " losses\n";
+                returnString += clashData.losses + ' losses\n';
             }
             if (clashData.battleCount !== undefined) {
-                returnString += clashData.battleCount + " total battles\n"; // Fixed typo: battleCounr -> battleCount
+                returnString += clashData.battleCount + ' total battles\n';
             }
-            return returnString || "Stats Unavailable"; // Return the string or fallback to wins
+            return returnString || 'Stats Unavailable';
         }
         
         return 'Data not found';
@@ -155,6 +139,8 @@ const DashTemp = () => {
     useEffect(() => {
         fetchCommits();
         fetchClashData();
+
+        console.log('User data:', user);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
