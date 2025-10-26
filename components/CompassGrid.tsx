@@ -35,22 +35,25 @@ function CustomTooltip({ active, payload }: TooltipProps) {
   return null;
 }
 
-// Custom shape to render user avatars as circular images
+// Custom shape to render user avatars with a yellow border
 function CustomScatterShape(props: any) {
   const { cx, cy, payload } = props;
   const avatar = payload.avatar;
 
   return (
-    <svg x={cx - 15} y={cy - 15} width={30} height={30}>
+    <svg x={cx - 20} y={cy - 20} width={40} height={40}>
+      {/* Yellow border */}
+      <circle cx="20" cy="20" r="20" fill="none" stroke="#FFD700" strokeWidth="2" />
       <defs>
         <clipPath id={`circleClip-${payload.id}`}>
-          <circle cx="15" cy="15" r="15" />
+          <circle cx="20" cy="20" r="18" />
         </clipPath>
       </defs>
+      {/* Avatar image */}
       <image
         href={avatar}
-        width="30"
-        height="30"
+        width="40"
+        height="40"
         clipPath={`url(#circleClip-${payload.id})`}
       />
     </svg>
