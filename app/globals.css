@@ -159,6 +159,9 @@ p, span, li {
 .text-clash-white {
   color: var(--clash-white);
 }
+.text-clash-black {
+  color: black;
+}
 
 .text-clash-gold-shadow {
   color: var(--clash-gold-dark);
