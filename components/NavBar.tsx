@@ -1,21 +1,22 @@
 'use client';
 
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 
 export default function NavBar() {
+  const router = useRouter();
+
   const handleSignOut = () => {
     signOut({ callbackUrl: '/' });
   };
-  const navigateHome = () => {
-    signOut({ callbackUrl: '/dashboard' });
-  };
+
   const navigateLeaderboard = () => {
-    signOut({ callbackUrl: '/leaderboard' });
+    router.push('/leaderboard');
   };
+
   const navigateDashboard = () => {
-    signOut({ callbackUrl: '/dashboard' });
-  };  
+    router.push('/dashboard');
+  };
 
   return (
     <nav className='flex justify-center gap-6 text-neutral-300'>
