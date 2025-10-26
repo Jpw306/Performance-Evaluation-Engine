@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { useUser } from "@/lib/useUser";
-import CompassGrid from "@/components/CompassGrid";
-import Leaderboard from "@/components/LeaderboardTable";
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import { useUser } from '@/lib/useUser';
+import CompassGrid from '@/components/CompassGrid';
+import Leaderboard from '@/components/LeaderboardTable';
 
 interface GroupMember {
   id: string;
@@ -23,14 +23,11 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log("DashboardPage mounted with groupId:", groupId);
     const fetchGroup = async () => {
       if (!groupId) return;
         try {
-          console.log("fetching group data for groupID:", groupId);
           const res = await fetch(`/api/group/${groupId}`);
-          console.log("response")
-          if (!res.ok) throw new Error("Failed to fetch group");
+          if (!res.ok) throw new Error('Failed to fetch group');
           const data = await res.json();
           setMembers(data.people || []);
         } catch (err) {

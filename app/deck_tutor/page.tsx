@@ -28,9 +28,7 @@ Let's get started!
 
 
   const getDeckRecommendation = async () => {
-    console.log('Button clicked, user:', user);
     if (!user || !user.githubUsername) {
-      console.log('No user found or missing user ID');
       setTutorResponse(`# Error
 Please make sure you have set up your Clash Royale account in your profile first.`);
       return;
@@ -38,7 +36,6 @@ Please make sure you have set up your Clash Royale account in your profile first
     
     setIsLoading(true);
     try {
-      console.log('Making API call with userId:', user.githubUsername);
       const response = await fetch('/api/get-recommended-deck');
       const data = await response.json();
       

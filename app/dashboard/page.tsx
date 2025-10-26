@@ -4,9 +4,13 @@
 import NavBar from '@/components/NavBar';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { useUser } from '@/lib/useUser';
 import { GroupLogin } from '@/models/user';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface GroupCardProps {
     group: GroupLogin;
@@ -35,13 +39,18 @@ const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
 
 const DashTemp = () => {
 
-    const { user } = useUser();
+    const { user, refetchUser } = useUser();
     
     const [githubData, setGithubData] = React.useState<any>(null);
     const [clashData, setClashData] = React.useState<any>(null);
     
     const [githubLoading, setGithubLoading] = React.useState(false);
     const [clashLoading, setClashLoading] = React.useState(false);
+    
+    // Create Group Dialog state
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [groupName, setGroupName] = useState('');
+    const [repoUrl, setRepoUrl] = useState('');
 
     const fetchCommits = async () => {
         if(user?.githubUsername) {
@@ -64,7 +73,6 @@ const DashTemp = () => {
                 }
             }
             catch(error) {
-                console.log('Error getting GitHub data:', error);
                 setGithubData(null);
             }
             finally {
@@ -129,18 +137,53 @@ const DashTemp = () => {
             if (clashData.battleCount !== undefined) {
                 returnString += clashData.battleCount + ' total battles\n';
             }
-            return returnString || 'Stats Unavailable';
+            return returnString.trim() || 'Stats Unavailable';
         }
         
         return 'Data not found';
     };
         
+    // Handle create group form submission
+    const handleCreateGroup = async (e: React.FormEvent) => {
+        e.preventDefault();
+        
+        if (!groupName.trim() || !repoUrl.trim()) {
+            alert('Please fill in all fields');
+            return;
+        }
+        
+        try {
+            const response = await fetch('/api/group', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: groupName.trim(),
+                    repositoryUrl: repoUrl.trim(),
+                }),
+            });
+            
+            if (response.ok) {
+                // Reset form and close dialog
+                setGroupName('');
+                setRepoUrl('');
+                setIsDialogOpen(false);
+                // Refetch user data to get updated groups
+                await refetchUser();
+            } else {
+                console.error('Failed to create group');
+                alert('Failed to create group. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error creating group:', error);
+            alert('Error creating group. Please try again.');
+        }
+    };
+        
     useEffect(() => {
         fetchCommits();
         fetchClashData();
-
-        console.log('User data:', user);
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
 
@@ -178,6 +221,68 @@ const DashTemp = () => {
                     
                     {/* Group Cards Section - 2/3 width */}
                     <div className='w-2/3'>
+                        {/* Create Group Button */}
+                        <div className='mb-6'>
+                            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                                <DialogTrigger asChild>
+                                    <Button className='bg-clash-blue hover:bg-clash-blue/80 text-white'>
+                                        Create Group
+                                    </Button>
+                                </DialogTrigger>
+                                <DialogContent className='bg-clash-dark border-clash-blue'>
+                                    <DialogHeader>
+                                        <DialogTitle className='text-clash-white'>Create New Group</DialogTitle>
+                                    </DialogHeader>
+                                    <form onSubmit={handleCreateGroup} className='space-y-4'>
+                                        <div>
+                                            <Label htmlFor='groupName' className='text-clash-white'>
+                                                Group Name
+                                            </Label>
+                                            <Input
+                                                id='groupName'
+                                                type='text'
+                                                value={groupName}
+                                                onChange={(e) => setGroupName(e.target.value)}
+                                                placeholder='Enter group name'
+                                                className='bg-clash-dark border-clash-blue text-clash-white'
+                                                required
+                                            />
+                                        </div>
+                                        <div>
+                                            <Label htmlFor='repoUrl' className='text-clash-white'>
+                                                Repository URL
+                                            </Label>
+                                            <Input
+                                                id='repoUrl'
+                                                type='url'
+                                                value={repoUrl}
+                                                onChange={(e) => setRepoUrl(e.target.value)}
+                                                placeholder='https://github.com/username/repository'
+                                                className='bg-clash-dark border-clash-blue text-clash-white'
+                                                required
+                                            />
+                                        </div>
+                                        <div className='flex justify-end space-x-2'>
+                                            <Button 
+                                                type='button' 
+                                                variant='outline' 
+                                                onClick={() => setIsDialogOpen(false)}
+                                                className='border-clash-blue text-clash-white hover:bg-clash-blue/20'
+                                            >
+                                                Cancel
+                                            </Button>
+                                            <Button 
+                                                type='submit'
+                                                className='bg-clash-blue hover:bg-clash-blue/80 text-white'
+                                            >
+                                                Create Group
+                                            </Button>
+                                        </div>
+                                    </form>
+                                </DialogContent>
+                            </Dialog>
+                        </div>
+
                         {user?.groups.length || 0 > 0 ? (
                             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4'>
                                 {user?.groups.map((group, index) => (

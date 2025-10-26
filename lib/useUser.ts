@@ -114,6 +114,7 @@ export function useUser() {
     loading,
     error,
     updateClashRoyaleTag,
+    refetchUser: fetchUser,
     session,
     accessToken,
   };
