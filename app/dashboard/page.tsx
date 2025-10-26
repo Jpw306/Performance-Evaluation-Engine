@@ -1,10 +1,12 @@
 import CompassGrid from '@/components/CompassGrid';
 import LeaderboardTable from '@/components/LeaderboardTable';
+import NavBar from '@/components/NavBar';
 import { mockPlayers } from '@/lib/mockData';
 
 export default function DashboardPage() {
   return (
     <main className="min-h-screen bg-clash-light p-8">
+      <NavBar />
       <div className="max-w-6xl mx-auto grid grid-cols-12 gap-6">
         <section className="col-span-8 bg-clash-dark p-6 rounded-2xl shadow-md">
           <h2 className="text-3xl font-headline text-clash-gold mb-4 drop-shadow">Team Compass</h2>
