@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { toast, Toaster } from 'sonner';
+import { GroupContext } from '@/lib/types';
 
 interface GroupData {
   name: string;
@@ -33,6 +34,7 @@ export default function DashboardPage() {
   const groupId = params?.groupId;
   const [members, setMembers] = useState<GroupMember[]>([]);
   const [loading, setLoading] = useState(true);
+  const [groupContext, setGroupContext] = useState<GroupContext | null>(null);
   
   // Invite dialog state
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);
@@ -55,7 +57,50 @@ export default function DashboardPage() {
       const data = await res.json();
       setMembers(data.members || []);
       setGroupData(data);
+
+      // Initialize group context when all data is loaded
+      if (data.members?.length > 0) {
+        const context: GroupContext = {
+          groupId,
+          users: new Map(data.members.map((member: GroupMember) => [
+            member.githubUsername,
+            {
+              githubUsername: member.githubUsername,
+              commits: member.commits,
+              winRate: member.winRate,
+              score: member.commits + member.winRate, // Basic scoring formula - adjust as needed
+              position: {
+                rank: 0, // Will be calculated after initialization
+                percentile: 0,
+                trend: 'stable'
+              },
+              historicalData: {
+                commits: [member.commits],
+                winRates: [member.winRate],
+                timestamps: [new Date().toISOString()]
+              }
+            }
+          ])),
+          stats: {
+            avgCommits: data.members.reduce((sum: number, m: GroupMember) => sum + m.commits, 0) / data.members.length,
+            avgWinRate: data.members.reduce((sum: number, m: GroupMember) => sum + m.winRate, 0) / data.members.length,
+            totalCommits: data.members.reduce((sum: number, m: GroupMember) => sum + m.commits, 0),
+            activeUsers: data.members.length
+          },
+          thresholds: {
+            dangerZone: 50, // Adjust these thresholds based on your requirements
+            highPerformer: 150
+          },
+          timeframe: {
+            start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // Last 30 days
+            end: new Date().toISOString()
+          }
+        };
+        
+        setGroupContext(context);
+      }
     } catch (err) {
+      console.error('Error fetching group data:', err);
     } finally {
       setLoading(false);
     }
@@ -127,7 +172,7 @@ export default function DashboardPage() {
                 Invite Member
               </button>
             </DialogTrigger>
-            <DialogContent className='bg-clash-dark border-clash-blue'>
+            <DialogContent className='w-3/4 bg-clash-dark border-clash-blue'>
               <DialogHeader>
                 <DialogTitle className='text-clash-white'>Invite New Member</DialogTitle>
               </DialogHeader>
@@ -149,9 +194,8 @@ export default function DashboardPage() {
                 <div className='flex justify-end space-x-2'>
                   <Button 
                     type='button' 
-                    variant='outline' 
                     onClick={() => setIsInviteDialogOpen(false)}
-                    className='border-clash-blue text-clash-white hover:bg-clash-blue/20'
+                    className='bg-clash-blue hover:bg-clash-blue/80 text-white'
                     disabled={isInviting}
                   >
                     Cancel
@@ -171,7 +215,7 @@ export default function DashboardPage() {
 
         <section className="flex flex-col gap-16 w-full max-w-5xl items-center">
           <CompassGrid members={members} />
-          <Leaderboard members={members} />
+          <Leaderboard members={members} groupContext={groupContext} />
         </section>
       </main>
     </>

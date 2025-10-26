@@ -185,6 +185,11 @@ p, span, li {
   color: black;
 }
 
+.border-clash-danger {
+  border-color: #ef4444;  /* This is the equivalent of Tailwind's red-500 */
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); /* Adding a subtle glow effect */
+}
+
 .text-clash-gold-shadow {
   color: var(--clash-gold-dark);
 }

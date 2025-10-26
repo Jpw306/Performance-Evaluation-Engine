@@ -1,6 +1,8 @@
 'use client';
 
 import Image from 'next/image';
+import { GroupContext } from '@/lib/types';
+import { dangerZone } from '@/lib/clash_helper_functions';
 
 interface Member {
   id: string;
@@ -8,17 +10,22 @@ interface Member {
   photoIcon?: string;
   commits: number;
   winRate: number;
+  githubUsername: string;
 }
 
 interface Props {
   members: Member[];
+  groupContext: GroupContext | null;
 }
 
-export default function LeaderboardTable({ members }: Props) {
+export default function LeaderboardTable({ members, groupContext }: Props) {
   const sorted = [...members].sort(
     (a, b) =>
       b.commits + b.winRate - (a.commits + a.winRate)
   );
+
+  // Get list of users in danger zone
+  const usersInDanger = groupContext ? dangerZone(groupContext) : [];
 
   return (
     <div className="w-full max-w-[800px] bg-clash-dark rounded-2xl border-[3px] border-clash-goldDark p-6">
@@ -49,7 +56,11 @@ export default function LeaderboardTable({ members }: Props) {
                     alt={p.name}
                     width={32}
                     height={32}
-                    className="w-8 h-8 rounded-full border-2 border-clash-gold"
+                    className={`w-8 h-8 rounded-full border-2 ${
+                      usersInDanger.includes(p.githubUsername)
+                        ? 'border-clash-danger'
+                        : 'border-clash-gold'
+                    }`}
                   />
                 )}
                 <span>{p.name}</span>

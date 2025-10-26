@@ -7,14 +7,14 @@
     Returns gemini response
 */
 
-import { NextResponse } from "next/server";
-import { CLASH_API_BASE_URL } from "@/lib/constants";
-import { GoogleGenAI } from "@google/genai";
-import { sliceAndTransform, transformBattleLogs } from "@/lib/clash_api_helper_functions";
-import dbConnect from "@/lib/mongodb";
-import { User } from "@/models/backend/user";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { NextResponse } from 'next/server';
+import { CLASH_API_BASE_URL } from '@/lib/constants';
+import { GoogleGenAI } from '@google/genai';
+import { sliceAndTransform, transformBattleLogs } from '@/lib/clash_api_helper_functions';
+import dbConnect from '@/lib/mongodb';
+import { User } from '@/models/backend/user';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]/route';
 
 interface SessionUser {
   githubUsername?: string;
@@ -76,17 +76,21 @@ export async function GET(request : Request) {
     const dataAsText = JSON.stringify(parsedData);
 
     const promptQuestion : string = 
-    "The json provided below represents the past 5 matches of Clash Royale played by the user.\n"
-    + "The user wants advice for improving their deck to perform better against their opponent's deck.\n"
-    + "Please provide a full deck recommendation for the user, and explain how they can use it\n";
+    'The json provided below represents the past 5 matches of Clash Royale played by the user.\n'
+    + 'The user wants advice for improving their deck to perform better against their opponent\'s deck.\n'
+    + 'Please provide a full deck recommendation for the user, and explain how they can use it\n'
+    + 'Don\'t mention the json data in your response, just provide the deck advice.\n'
+    + 'Be like a strict, goofy boss if you\'re falling behind, but jovial if doing well.\n'
+    + 'Yo\'re talking to one person.';
 
     const fullPrompt = promptQuestion + dataAsText;
-
+    
     // ask gemini for suggestions
     const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: 'gemini-2.5-flash',
         contents: fullPrompt, 
     });
+    
 
     return NextResponse.json({response: response.text}, {status: 200});
 }

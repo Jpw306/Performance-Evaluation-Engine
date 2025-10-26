@@ -18,6 +18,10 @@ export default function NavBar() {
     router.push('/dashboard');
   };
 
+  const navigateDeckTutor = () => {
+    router.push('/deck_tutor');
+  };
+
   return (
     <nav className='flex justify-center gap-6 text-neutral-300'>
       <span 
@@ -31,6 +35,12 @@ export default function NavBar() {
         className='hover:text-yellow-400 font-headline cursor-pointer'
       >
         Dashboard&emsp;
+      </span>
+      <span
+        onClick={navigateDeckTutor}
+        className='hover:text-yellow-400 font-headline cursor-pointer'
+      >
+        Deck Tutor&emsp;
       </span>
       <span 
         onClick={handleSignOut}
