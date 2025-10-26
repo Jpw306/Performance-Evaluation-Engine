@@ -7,7 +7,7 @@ export default function LeaderboardPage() {
       <NavBar />
       <div className="max-w-5xl mx-auto mt-10">
         <h1 className="text-3xl font-headline mb-6 text-clash-gold drop-shadow">Leaderboard</h1>
-        <LeaderboardTable />
+        {/* <LeaderboardTable /> */}
       </div>
     </main>
   );
