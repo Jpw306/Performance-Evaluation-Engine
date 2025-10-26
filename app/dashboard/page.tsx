@@ -10,14 +10,13 @@ import { GroupLogin } from '@/models/user';
 import React, { useEffect } from 'react';
 
 interface GroupCardProps {
-    id: string;
     group: GroupLogin;
 };
 
-const GroupCard: React.FC<GroupCardProps> = ({ id, group }) => {
+const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
 
     const handleClick = () => {
-        window.location.href = '/dashboard/' + id;
+        window.location.href = '/dashboard/' + group.id;
     };
 
     return (
