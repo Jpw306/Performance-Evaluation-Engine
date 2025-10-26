@@ -1,6 +1,7 @@
 'use client';
 
 import { useUser } from '../../lib/useUser';
+import MainLayout from '../layouts/MainLayout';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -76,8 +77,9 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] bg-cover bg-center text-clash-white p-8 font-text flex flex-col items-center justify-center">
-      <div className="w-1/2 max-w-md">
+    <MainLayout>
+      <div className="flex flex-col items-center justify-center p-8 h-[calc(100vh-8vh)]">
+        <div className="w-1/2 max-w-md">
         <div className="flex flex-col items-center mb-8">
           {/* User Avatar */}
           <div className="relative mb-4">
@@ -134,6 +136,7 @@ export default function Profile() {
           </div>
         </form>
       </div>
-    </div>
+      </div>
+    </MainLayout>
   );
 }

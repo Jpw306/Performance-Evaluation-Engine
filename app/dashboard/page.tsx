@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import NavBar from '@/components/NavBar';
+import MainLayout from '../layouts/MainLayout';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -264,9 +264,9 @@ const DashTemp = () => {
     }, [user]);
 
     return (
-        <main className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] text-clash-white p-8 font-text">
-            <div className='flex flex-col gap-8 p-8 w-3/4 mx-auto'>
-                <NavBar></NavBar>
+        <MainLayout>
+            <div className='p-8'>
+                <div className='flex flex-col gap-8 p-8 w-3/4 mx-auto'>
                 <div className='flex flex-row items-start gap-8'>
                     {/* Profile Picture Section - 1/3 width */}
                     <div className='w-1/3 flex flex-col items-center gap-4 bg-clash-dark'>
@@ -427,7 +427,8 @@ const DashTemp = () => {
                     </div>
                 </div>
             </div>
-        </main>
+            </div>
+        </MainLayout>
     );
 };
 

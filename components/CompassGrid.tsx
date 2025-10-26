@@ -9,6 +9,7 @@ interface Member {
   photoIcon?: string;
   commits: number;
   winRate: number;
+  
 }
 
 import { GroupContext } from '@/lib/types';

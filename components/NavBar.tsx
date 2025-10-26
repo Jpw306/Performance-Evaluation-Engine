@@ -3,51 +3,44 @@
 import { useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 
+
 export default function NavBar() {
   const router = useRouter();
 
-  const handleSignOut = () => {
-    signOut({ callbackUrl: '/' });
-  };
-
-  const navigateLeaderboard = () => {
-    router.push('/leaderboard');
-  };
-
-  const navigateDashboard = () => {
-    router.push('/dashboard');
-  };
-
-  const navigateDeckTutor = () => {
-    router.push('/deck_tutor');
-  };
+  const mainNavItems = [
+    { label: 'Leaderboard', onClick: () => router.push('/leaderboard') },
+    { label: 'Dashboard', onClick: () => router.push('/dashboard') },
+    { label: 'Deck Tutor', onClick: () => router.push('/deck_tutor') },
+  ];
 
   return (
-    <nav className='flex justify-center gap-6 text-neutral-300'>
-      <span 
-        onClick={navigateLeaderboard}
-        className='hover:text-yellow-400 font-headline cursor-pointer'
+    <header className="w-full h-[12vh] clash-navbar">
+      <nav
+        aria-label="Main navigation"
+        className="clash-nav-content"
       >
-        Leaderboard&emsp;
-      </span>
-      <span 
-        onClick={navigateDashboard}
-        className='hover:text-yellow-400 font-headline cursor-pointer'
-      >
-        Dashboard&emsp;
-      </span>
-      <span
-        onClick={navigateDeckTutor}
-        className='hover:text-yellow-400 font-headline cursor-pointer'
-      >
-        Deck Tutor&emsp;
-      </span>
-      <span 
-        onClick={handleSignOut}
-        className='hover:text-yellow-400 font-headline cursor-pointer'
-      >
-        Log Out
-      </span>
-    </nav>
+        <div className="clash-nav-group">
+          {mainNavItems.map((item) => (
+            <button
+              key={item.label}
+              onClick={item.onClick}
+              className="nav-button"
+              tabIndex={0}
+              type="button"
+            >
+              {item.label}
+            </button>
+          ))}
+        </div>
+        <button
+          onClick={() => signOut({ callbackUrl: '/' })}
+          className="nav-button-red"
+          tabIndex={0}
+          type="button"
+        >
+          Log Out
+        </button>
+      </nav>
+    </header>
   );
 }
