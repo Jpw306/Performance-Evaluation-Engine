@@ -3,7 +3,6 @@ import localFont from 'next/font/local';
 import './globals.css';
 import Providers from '../components/Providers';
 
-// Load Clash Royale (Supercell) fonts
 const clashHeadline = localFont({
   src: [
     {
@@ -26,11 +25,7 @@ export const metadata: Metadata = {
   description: 'Clash Royale x Productivity Compass',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={`${clashHeadline.variable} antialiased bg-clash-black text-clash-light`}>

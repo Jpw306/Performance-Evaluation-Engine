@@ -7,9 +7,10 @@
     Returns gemini response
 */
 
-import { NextResponse } from 'next/server';
-import { CLASH_API_BASE_URL } from '@/lib/constants';
-import { GoogleGenAI } from '@google/genai';
+import { NextResponse } from "next/server";
+import { CLASH_API_BASE_URL } from "@/lib/constants";
+import { GoogleGenAI } from "@google/genai";
+import { sliceAndTransform, transformBattleLogs } from "@/lib/clash_api_helper_functions";
 
 const ai = new GoogleGenAI({});
 
@@ -33,21 +34,21 @@ export async function GET(request : Request) {
 
     // make json array of last 5 matches
     // get only matches, card names, opponent card names, outcome
-    const parsedData = data; // TODO: actually parse the data later
+    const parsedData = sliceAndTransform(data, tempClashId); 
+    const dataAsText = JSON.stringify(parsedData);
 
     const promptQuestion : string = 
-    'The json provided below represents the past 5 matches of Clash Royale played by the user.'
-    + 'The user wants advice for improving their deck to perform better against their opponent\'s deck.'
-    + 'Please provide a full deck recommendation for the user, and explain how they can use it'
-    + 'The user\'s id is ' + tempClashId;
+    "The json provided below represents the past 5 matches of Clash Royale played by the user.\n"
+    + "The user wants advice for improving their deck to perform better against their opponent's deck.\n"
+    + "Please provide a full deck recommendation for the user, and explain how they can use it\n";
 
-    const fullPrompt = promptQuestion + parsedData;
+    const fullPrompt = promptQuestion + dataAsText;
 
     // ask gemini for suggestions
     const response = await ai.models.generateContent({
-        model: 'gemini-2.5-flash',
-        contents: 'Hello. I\'m testing my api. Are you doing well?', // TODO replace with parsed contents later
+        model: "gemini-2.5-flash",
+        contents: fullPrompt, 
     });
 
-    return NextResponse.json({error: response.text}, {status: 200});
+    return NextResponse.json({response: response.text}, {status: 200});
 }

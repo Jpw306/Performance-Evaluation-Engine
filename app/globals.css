@@ -2,9 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
-/* -----------------------------
-   Clash Royale (Supercell) Theme
-   ----------------------------- */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+}
 
 /* Font faces */
 @font-face {
@@ -34,7 +36,7 @@
   --clash-blue: #1a8fe3;
   --clash-gold: #ffd700;
   --clash-gold-border: #fcdb21;
-  --clash-gold-shadow:#945021;
+  --clash-gold-dark:#945021;
   --clash-gray: #a2a2a2;
   --clash-light: #f5f6fa;
 }
@@ -125,14 +127,100 @@ p, span, li {
 .text-clash-white {
   color: var(--clash-white);
 }
-.text-clash-gold {
-  color: var(--clash-gold);
-}
+
 .text-clash-gold-shadow {
-  color: var(--clash-gold-shadow);
+  color: var(--clash-gold-dark);
 }
 .text-clash-gold-border {
-  color: var(--clash-gold-shadow);
-  border-color: var(--clash-gold-border);
-  border-width: 10px;
+  color: var(--clash-white);
+  text-shadow: 
+    -1px -1px 0 var(--clash-gold-dark),
+     1px -1px 0 var(--clash-gold-dark),
+    -1px  1px 0 var(--clash-gold-dark),
+     1px  1px 0 var(--clash-gold-dark);
+}
+
+/* Clash Royale Button Component — Modern Tailwind v4+ Syntax */
+
+/* -----------------------------
+   Clash Royale Battle Button
+   ----------------------------- */
+.clash-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  /* Size & shape */
+  min-width: 240px;
+  height: 90px;
+  border-radius: 1rem;
+
+  /* Font */
+  font-family: var(--font-headline);
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.015em;
+  color: var(--clash-white);
+  line-height: 1;
+
+  /* Gradient background */
+  background: linear-gradient(
+    180deg,
+    #FFD700 0%,
+    #F2B73F 60%,
+    #945021 100%
+  );
+
+  /* Border & shadow */
+  border: 4px solid var(--clash-gold-border);
+  box-shadow:
+    0 8px 0 var(--clash-gold-dark),
+    0 10px 16px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(255, 215, 0, 0.5);
+
+  /* Text shadow for the chunky look */
+  text-shadow:
+    -2px -2px 0 var(--clash-gold-dark),
+     2px -2px 0 var(--clash-gold-dark),
+    -2px  2px 0 var(--clash-gold-dark),
+     2px  2px 0 var(--clash-gold-dark);
+
+  /* Animation & interaction */
+  animation: clashGlow 2.8s ease-in-out infinite;
+  transition: transform 150ms ease, box-shadow 150ms ease;
+  cursor: pointer;
+}
+
+.clash-button:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 10px 0 var(--clash-gold-dark),
+    0 14px 20px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(255, 215, 0, 0.8);
+}
+
+.clash-button:active {
+  transform: translateY(4px) scale(0.97);
+  box-shadow:
+    0 3px 0 var(--clash-gold-dark),
+    0 6px 8px rgba(0, 0, 0, 0.3),
+    0 0 10px rgba(255, 215, 0, 0.4);
+}
+
+/* Gold aura pulse animation */
+@keyframes clashGlow {
+  0%, 100% {
+    box-shadow:
+      0 8px 0 var(--clash-gold-dark),
+      0 10px 16px rgba(0, 0, 0, 0.5),
+      0 0 18px rgba(255, 215, 0, 0.3);
+  }
+  50% {
+    box-shadow:
+      0 8px 0 var(--clash-gold-dark),
+      0 10px 16px rgba(0, 0, 0, 0.5),
+      0 0 40px rgba(255, 215, 0, 0.8);
+  }
 }
