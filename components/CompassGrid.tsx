@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { Props as RechartsProps } from 'recharts/types/component/DefaultLegendContent';
 
 interface Member {
   id: string;
@@ -9,6 +10,7 @@ interface Member {
   photoIcon?: string;
   commits: number;
   winRate: number;
+  githubUsername: string;
 }
 
 import { GroupContext } from '@/lib/types';
@@ -39,9 +41,25 @@ function CustomTooltip({ active, payload }: TooltipProps) {
   return null;
 }
 
+type CustomScatterShapeProps = {
+  cx?: number;
+  cy?: number;
+  payload?: {
+    id: string;
+    avatar: string;
+    githubUsername: string;
+  };
+  usersInDanger: string[];
+}
+
 // Custom shape to render user avatars with a yellow border
-function CustomScatterShape(props: any) {
-  const { cx, cy, payload, usersInDanger } = props;
+function CustomScatterShape(props: CustomScatterShapeProps) {
+  const { cx = 0, cy = 0, payload, usersInDanger } = props;
+  
+  if (!payload) {
+    return null;
+  }
+
   const avatar = payload.avatar;
   const isInDanger = usersInDanger.includes(payload.githubUsername);
 
@@ -142,7 +160,9 @@ export default function CompassGrid({ members, groupContext }: Props) {
           <Tooltip content={CustomTooltip} cursor={{ strokeDasharray: '3 3', stroke: '#FFD700' }} />
           <Scatter 
             data={data} 
-            shape={(props) => <CustomScatterShape {...props} usersInDanger={usersInDanger} />} 
+            shape={function(props: any) {
+              return <CustomScatterShape {...props} usersInDanger={usersInDanger} />;
+            }}
           />
         </ScatterChart>
       </ResponsiveContainer>
