@@ -57,10 +57,10 @@ export async function GET(
           winRate: 0,
         };
 
-        try {
-          if (user.clashRoyaleTag && user.clashRoyaleTag.trim()) {
-            const clashRes = await fetch(
-              `http://localhost:3000/api/get-player?userId=${encodeURIComponent(user.clashRoyaleTag)}`,
+          try {
+            // Use the get-winrate endpoint instead with specific username
+            const winrateRes = await fetch(
+              `http://localhost:3000/api/get-winrate?username=${encodeURIComponent(username)}`,
               { 
                 headers: { 
                   'Content-Type': 'application/json',
@@ -68,44 +68,16 @@ export async function GET(
                 } 
               }
             );
-            if (clashRes.ok) {
-              const clashData = await clashRes.json();
-              
-              member.winRate = 0;
-              
-              if (typeof clashData.wins === 'number' && typeof clashData.losses === 'number') {
-                const totalMatches = clashData.wins + clashData.losses;
-                if (totalMatches > 0) {
-                  member.winRate = parseFloat(((clashData.wins / totalMatches) * 100).toFixed(1));
-                }
-              }
-              else if (typeof clashData.battleCount === 'number' && typeof clashData.wins === 'number') {
-                if (clashData.battleCount > 0) {
-                  member.winRate = parseFloat(((clashData.wins / clashData.battleCount) * 100).toFixed(1));
-                }
-              }
-              else if (clashData.stats) {
-                if (clashData.stats.wins && clashData.stats.losses) {
-                  const totalMatches = clashData.stats.wins + clashData.stats.losses;
-                  if (totalMatches > 0) {
-                    member.winRate = parseFloat(((clashData.stats.wins / totalMatches) * 100).toFixed(1));
-                  }
-                }
-              }
-              else {
-              }
-              
+            if (winrateRes.ok) {
+              const winrateData = await winrateRes.json();
+              member.winRate = winrateData.winRate || 0;
             } else {
               member.winRate = 0;
             }
-          } else {
+          } catch (err) {
+            console.error('Error fetching winrate for user:', username, err);
             member.winRate = 0;
-          }
-        } catch (err) {
-          member.winRate = 0;
-        }
-
-        try {
+          }        try {
           if (group.repositoryUrl && group.repositoryUrl.trim()) {
             const commitRes = await fetch(
               `http://localhost:3000/api/get-commits?author=${encodeURIComponent(username)}&repositoryUrl=${encodeURIComponent(

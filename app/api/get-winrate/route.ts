@@ -28,7 +28,10 @@ export async function GET(request: Request) {
     if (!session || !session.user)
           return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     
-    const githubUsername = (session.user as SessionUser).githubUsername;
+    // Get username from URL params or fall back to session user
+    const { searchParams } = new URL(request.url);
+    const requestedUsername = searchParams.get('username');
+    const githubUsername = requestedUsername || (session.user as SessionUser).githubUsername;
 
     if (!githubUsername)
           return NextResponse.json({ error: 'GitHub username not found in session' }, { status: 400 });
@@ -68,7 +71,7 @@ export async function GET(request: Request) {
 
     const totalMatches = parsedData.length;
     const wins = parsedData.reduce((count, match) => count + (match.matchOutcome === 'Win' ? 1: 0), 0);
-    const winRate = totalMatches === 0 ? 0 : wins / totalMatches;
+    const winRate = totalMatches === 0 ? 0 : (wins / totalMatches) * 100;
 
-    return NextResponse.json({response: `Winrate: ${winRate} for ${totalMatches} matches`}, {status: 200});
+    return NextResponse.json({ winRate: parseFloat(winRate.toFixed(1)) }, {status: 200});
 } 
