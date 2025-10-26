@@ -39,7 +39,7 @@ const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
 };
 
 const DashTemp = () => {
-    const { user, refetchUser } = useUser();
+    const { user, refetchUser, session, accessToken } = useUser();
     
     const [githubData, setGithubData] = React.useState<any>(null);
     const [clashData, setClashData] = React.useState<any>(null);
@@ -56,10 +56,10 @@ const DashTemp = () => {
     const [invitesLoading, setInvitesLoading] = useState(false);
 
     const fetchCommits = async () => {
-        if(user?.githubUsername) {
+        if(user?.githubUsername && accessToken) {
             setGithubLoading(true);
             try {
-                const response = await fetch('/api/get-commits', {
+                const response = await fetch('/api/github-stats', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -71,20 +71,19 @@ const DashTemp = () => {
                     setGithubData(data);
                 }
                 else {
-                    console.error('Failed to fetch commit data');
+                    console.error('Failed to fetch GitHub stats:', response.status, response.statusText);
                     setGithubData(null);
                 }
             }
             catch(error) {
+                console.log('Error getting GitHub stats:', error);
                 setGithubData(null);
             }
             finally {
                 setGithubLoading(false);
             }
         }
-    };
-
-    const fetchClashData = async () => {
+    };    const fetchClashData = async () => {
         if(user?.clashRoyaleTag) {
             setClashLoading(true);
             try {
@@ -118,7 +117,14 @@ const DashTemp = () => {
     const getGithubDisplayText = () => {
         if (githubLoading) return 'Loading...';
         if (githubData && githubData.commits !== undefined) {
-            return `${githubData.commits} commits`;
+            let displayText = `${githubData.commits} commits`;
+            if (githubData.period) {
+                displayText += `\n(${githubData.period})`;
+            }
+            if (githubData.totalRepos !== undefined) {
+                displayText += `\n${githubData.totalRepos} public repos`;
+            }
+            return displayText;
         }
         return 'Data not found';
     };
@@ -279,8 +285,8 @@ const DashTemp = () => {
                             {user?.name}
                         </div>
                         <div className="text-center">
-                            <h3>GitHub Commits</h3>
-                            <p className="text-clash-white">
+                            <h3>GitHub Stats</h3>
+                            <p className="text-clash-white whitespace-pre-line">
                                 {getGithubDisplayText()}
                             </p>
                             <h3>Clash Stats</h3>

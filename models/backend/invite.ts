@@ -4,6 +4,7 @@ const InviteSchema = new Schema({
   githubRepoUrl: { type: String, required: true },
   groupName: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
+  invitedGithubUsername: { type: String, required: true },
   expiresAt: { 
     type: Date, 
     default: () => new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)

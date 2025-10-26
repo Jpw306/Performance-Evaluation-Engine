@@ -42,8 +42,9 @@ export async function GET(request: NextRequest, { params }: { params: { groupId:
 
     return NextResponse.json({
       id: group._id,
+      name: group.name,
       people: group.people,
-      repo: group.repo,
+      repositoryUrl: group.repositoryUrl,
       createdBy: group.createdBy,
       createdAt: group.createdAt
     });
