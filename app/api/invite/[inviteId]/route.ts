@@ -15,7 +15,7 @@ interface SessionUser {
 
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: { inviteId: string } }
+    { params }: { params: Promise<{ inviteId: string }> }
 ) {
     try {
         const session = await getServerSession(authOptions);
@@ -31,7 +31,8 @@ export async function DELETE(
 
         await dbConnect();
 
-        const invite = await Invite.findById(params.inviteId);
+        const { inviteId } = await params; // Await params
+        const invite = await Invite.findById(inviteId);
         
         if (!invite)
             return NextResponse.json({ error: 'Invite not found' }, { status: 404 });
@@ -39,7 +40,7 @@ export async function DELETE(
         if (invite.invitedGithubUsername !== githubUsername)
             return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 
-        await Invite.findByIdAndDelete(params.inviteId);
+        await Invite.findByIdAndDelete(inviteId);
         
         return new NextResponse(null, { status: 204 });
 
@@ -54,7 +55,7 @@ export async function DELETE(
 
 export async function POST(
     request: NextRequest,
-    { params }: { params: { inviteId: string } }
+    { params }: { params: Promise<{ inviteId: string }> }
 ) {
     try {
         const session = await getServerSession(authOptions);
@@ -70,7 +71,8 @@ export async function POST(
 
         await dbConnect();
 
-        const invite = await Invite.findById(params.inviteId);
+        const { inviteId } = await params; // Await params
+        const invite = await Invite.findById(inviteId);
         
         if (!invite)
             return NextResponse.json({ error: 'Invite not found' }, { status: 404 });
@@ -78,14 +80,18 @@ export async function POST(
         if (invite.invitedGithubUsername !== githubUsername)
             return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
 
-        // Accept the invite logic here
         const invitedUser = await User.findOne({ githubUsername });
         
         if (!invitedUser)
             return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
-        // Add user to the group
-        if (!invitedUser.groups) invitedUser.groups = [];
+        // Ensure groups is an array of objects
+        if (!invitedUser.groups || !Array.isArray(invitedUser.groups)) {
+            invitedUser.groups = [];
+        } else if (invitedUser.groups.length > 0 && typeof invitedUser.groups[0] === 'string') {
+            // Migrate old string groups to objects if needed
+            invitedUser.groups = [];
+        }
 
         // Find the group in the database based on name and repo URL
         const group = await Group.findOne({
@@ -98,26 +104,27 @@ export async function POST(
         }
 
         // Add the user to the group's members
-        if (!group.members) group.members = [];
-        group.members.push({
-            githubUsername,
-            avatarUrl: user.image || '',
-            name: user.name || ''
-        });
+        if (!group.people)
+            group.people = [];
 
-        // Add the group reference to the user's groups
+        group.people.push(githubUsername);
+
+        // Ensure proper structure for groups
         invitedUser.groups.push({
-            id: group._id,
+            id: group._id.toString(), // Convert ObjectId to string
             name: group.name,
             repositoryUrl: group.repositoryUrl,
-            numMembers: group.members.length
+            numMembers: group.people.length
         });
+
+        // Mark groups as modified for Mongoose
+        invitedUser.markModified('groups');
 
         // Save both documents
         await Promise.all([
             invitedUser.save(),
             group.save(),
-            Invite.findByIdAndDelete(params.inviteId)
+            Invite.findByIdAndDelete(inviteId)
         ]);
 
         return new NextResponse(null, { status: 204 });
