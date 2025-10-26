@@ -2,8 +2,8 @@ import { mockPlayers } from '@/lib/mockData';
 
 export default function LeaderboardTable() {
   return (
-    <table className='w-full border-collapse border border-supercell-gray text-center'>
-      <thead className='bg-supercell-black text-supercell-yellow font-headline uppercase tracking-tightest'>
+    <table className='w-full border-collapse border border-clash-gray text-center bg-supercell-gray'>
+      <thead className='bg-clash-black text-supercell-yellow font-headline uppercase tracking-tightest'>
         <tr>
           <th className="p-3">Rank</th>
           <th className="p-3">Player</th>
@@ -12,9 +12,9 @@ export default function LeaderboardTable() {
           <th className="p-3">Overall Score</th>
         </tr>
       </thead>
-      <tbody className="bg-supercell-darkGray">
+      <tbody className="bg-clash-dark">
         {mockPlayers.map((p) => (
-          <tr key={p.rank} className="border-t border-supercell-gray/40 hover:bg-supercell-mediumGray/20">
+          <tr key={p.rank} className="border-t border-clash-gray/40 bg-clash-dark hover:bg-supercell-mediumGray/20">
             <td className="p-3 font-bold">{p.rank}</td>
             <td className="p-3 uppercase font-headline">{p.name}</td>
             <td className="p-3 font-bold">{p.commits}</td>

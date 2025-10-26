@@ -27,7 +27,7 @@ export default function CompassGrid() {
   }, []);
 
   return (
-    <div className="relative w-[600px] h-[600px] rounded-2xl overflow-hidden bg-gradient-to-b from-clash-dark to-clash-black border-4 border-clash-white">
+    <div className="relative w-[600px] h-[600px] rounded-2xl overflow-hidden bg-gradient-to-b from-clash-dark to-clash-black border-4 border-clash-white bg-clash-dark">
       {/* Subtle gold glow background */}
       <div className="absolute inset-0 bg-clash-gold/5 blur-xl pointer-events-none" />
 
