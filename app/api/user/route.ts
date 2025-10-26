@@ -44,23 +44,9 @@ export async function POST(request: NextRequest)
   user.avatarUrl = avatarUrl || user.avatarUrl;
   user.name = name || user.name;
 
-  // console.log('Database connection state:', mongoose.connection.readyState);
-  // console.log('Connected to database:', mongoose.connection.db?.databaseName);
-  
-  console.log('About to query groups...');
-  console.log('Group model:', Group);
-  console.log('Group collection name:', Group.collection.name);
-  
   let groups: any[] = await Group.find({}).lean();
-  console.log('All groups in database:', groups);
-  console.log('Number of groups found:', groups.length);
-  
-  // Let's also try a count to see if there's a difference
-  const groupCount = await Group.countDocuments({});
-  console.log('Group count from countDocuments:', groupCount);
   
   groups = groups.filter(g => g.people.includes(githubUsername));
-  console.log('Filtered groups for user:', githubUsername, groups);
 
   const formattedGroups = groups.map(g => ({
     id: g._id,

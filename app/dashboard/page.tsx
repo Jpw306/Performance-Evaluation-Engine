@@ -5,7 +5,6 @@ import NavBar from '@/components/NavBar';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { useUser } from '@/lib/useUser';
-import { Group } from '@/models/group';
 import { GroupLogin } from '@/models/user';
 import React, { useEffect } from 'react';
 
