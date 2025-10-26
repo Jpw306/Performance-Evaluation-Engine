@@ -13,15 +13,29 @@ import { GoogleGenAI } from "@google/genai";
 import { sliceAndTransform, transformBattleLogs } from "@/lib/clash_api_helper_functions";
 import dbConnect from "@/lib/mongodb";
 import { User } from "@/models/backend/user";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
+
+interface SessionUser {
+  githubUsername?: string;
+  name?: string;
+  email?: string;
+  image?: string;
+};
 
 const ai = new GoogleGenAI({});
 
 export async function GET(request : Request) {
 
-    // get user id from url
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
-    if (!userId) return NextResponse.json({error: 'Missing userId in parameters!'}, {status: 400});
+    const session = await getServerSession(authOptions);
+    
+    if (!session || !session.user)
+            return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
+    
+    const githubUsername = (session.user as SessionUser).githubUsername;
+
+    if (!githubUsername)
+            return NextResponse.json({ error: 'GitHub username not found in session' }, { status: 400 });
 
     // get clash id from database
     let clashId;
@@ -29,7 +43,7 @@ export async function GET(request : Request) {
     try {
         await dbConnect();
 
-        const user = await User.findOne({ _id: userId });
+        const user = await User.findOne({ githubUsername: githubUsername });
 
         if (!user) {
             return NextResponse.json(
