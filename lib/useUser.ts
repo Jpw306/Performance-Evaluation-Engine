@@ -15,12 +15,20 @@ export function useUser() {
 
     const accessToken = (session as any)?.accessToken;
 
-    const fetchUser = async (githubUsername: string) => {
+    const fetchUser = async () => {
         setLoading(true);
         setError(null);
     
         try {
-            const response = await fetch(`/api/user?githubUsername=${githubUsername}`);
+            const response = await fetch('/api/user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    githubUsername: (session!.user as any).githubUsername,
+                    name: session!.user!.name,
+                    avatarUrl: session!.user!.image,
+                })
+            });
         
             if (response.ok)
                 setUser(await response.json());
@@ -39,7 +47,7 @@ export function useUser() {
     useEffect(() => {
         const githubUsername = (session?.user as any)?.githubUsername;
         if(githubUsername)
-            fetchUser(githubUsername);
+            fetchUser();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [session]);
