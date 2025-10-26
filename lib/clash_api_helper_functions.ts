@@ -6,12 +6,6 @@ import {
   MatchOutcome 
 } from '@/lib/clash_api_types';
 
-function getMatchOutcome(trophyChange: number): MatchOutcome {
-  if (trophyChange > 0) return 'Win';
-  if (trophyChange < 0) return 'Loss';
-  return 'Draw';
-}
-
 function mapCardsToObject(cardArray: ApiCard[]): Record<string, number> {
   return cardArray.reduce((acc, card) => {
     acc[card.name] = card.level;
@@ -19,12 +13,43 @@ function mapCardsToObject(cardArray: ApiCard[]): Record<string, number> {
   }, {} as Record<string, number>);
 }
 
-export function parseBattleLogs(apiResponse: ApiBattleLog[]): ParsedBattle[] {
-  return apiResponse.slice(0, 20).map(log => {
-    return {
-      myCards: mapCardsToObject(log.team[0].cards),
-      opponentCards: mapCardsToObject(log.opponent[0].cards),
-      matchOutcome: getMatchOutcome(log.team[0].trophyChange)
-    };
-  });
+// get just the first 5 logs
+export function sliceRawLogs(rawJson: unknown): ApiBattleLog[] {
+    const typedLogs = rawJson as ApiBattleLog[];
+    return typedLogs.slice(0, 5);
 }
+
+// turn the first 5 logs into shorter json (saves on tokens)
+export function transformBattleLogs(battleLogs: ApiBattleLog[], clashId: string): ParsedBattle[] {
+    return battleLogs.map(log => {
+        let myData = log.team[0];
+        const opponentData = log.opponent[0];
+
+        // account for 2v2 matches:
+        if (log.team[1]) {
+            if (log.team[1].tag == clashId) {
+                myData = log.team[1];
+            }
+        }
+
+        return {
+            myPlayerTag: myData.tag,
+            myCards: mapCardsToObject(myData.cards),
+            opponentPlayerTag: opponentData.tag,
+            opponentCards: mapCardsToObject(opponentData.cards),
+            matchOutcome: getMatchOutcome(myData.crowns, opponentData.crowns)
+        };
+    });
+}
+
+export function sliceAndTransform(rawJson: unknown, clashId: string): ParsedBattle[] {
+    return transformBattleLogs(sliceRawLogs(rawJson), clashId);
+}
+
+// determine the winner of a match based on crown count
+export function getMatchOutcome(myCrowns: number, opponentsCrowns: number): MatchOutcome {
+    if (myCrowns > opponentsCrowns) return 'Win';
+    else if (myCrowns < opponentsCrowns) return 'Loss';
+    else return 'Draw';
+}
+

@@ -33,6 +33,8 @@ export async function POST(request: NextRequest) {
         name,
         photoIcon,
         clashRoyaleTag: clashRoyaleTag || '', // Default empty if not provided
+        groups: [], // Initialize empty groups array
+        pendingInvitations: [], // Initialize empty pending invitations array
       });
       await user.save();
     }
@@ -43,6 +45,8 @@ export async function POST(request: NextRequest) {
       photoIcon: user.photoIcon,
       githubUsername: user.githubUsername,
       clashRoyaleTag: user.clashRoyaleTag,
+      groups: user.groups || [], // Include groups in response
+      pendingInvitations: user.pendingInvitations || [], // Include pending invitations
     });
     
   } catch (error) {
@@ -83,6 +87,8 @@ export async function GET(request: NextRequest) {
       photoIcon: user.photoIcon,
       githubUsername: user.githubUsername,
       clashRoyaleTag: user.clashRoyaleTag,
+      groups: user.groups || [], // Include groups in response
+      pendingInvitations: user.pendingInvitations || [], // Include pending invitations
     });
     
   } catch (error) {

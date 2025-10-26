@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 import { useSession } from 'next-auth/react';
 import { useState, useEffect } from 'react';
 
@@ -7,14 +9,9 @@ export interface UserData {
     photoIcon: string;
     githubUsername: string;
     clashRoyaleTag: string;
-}
-
-interface ExtendedUser {
-    name?: string | null;
-    email?: string | null;
-    image?: string | null;
-    githubUsername?: string;
-}
+    groups: string[]; // Array of group IDs
+    pendingInvitations: string[]; // Array of invitation IDs
+};
 
 export function useUser() {
 
@@ -22,6 +19,8 @@ export function useUser() {
     const [user, setUser] = useState<UserData | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+
+    const accessToken = (session as any)?.accessToken;
 
     const fetchUser = async (githubUsername: string) => {
         setLoading(true);
@@ -45,18 +44,19 @@ export function useUser() {
     };
 
     useEffect(() => {
-        const extendedUser = session?.user as ExtendedUser;
-        if(extendedUser?.githubUsername)
-            fetchUser(extendedUser.githubUsername);
+        const githubUsername = (session?.user as any)?.githubUsername;
+        if(githubUsername)
+            fetchUser(githubUsername);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [session]);
 
   const createUserFromSession = async () => {
+
     if (!session?.user)
         return;
 
-    const extendedUser = session.user as ExtendedUser;
+    const githubUsername = (session.user as any).githubUsername;
 
     try
     {
@@ -64,9 +64,9 @@ export function useUser() {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                githubUsername: extendedUser.githubUsername,
-                name: extendedUser.name,
-                photoIcon: extendedUser.image,
+                githubUsername: githubUsername,
+                name: session.user.name,
+                photoIcon: session.user.image,
             }),
         });
 
@@ -84,7 +84,8 @@ export function useUser() {
     if (!user)
         return false;
 
-    try {
+    try
+    {
       const response = await fetch('/api/user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -99,9 +100,11 @@ export function useUser() {
       if (response.ok) {
         const updatedUser = await response.json();
         setUser(updatedUser);
+
         return true;
       }
-    } catch {
+    } catch
+    {
       setError('Error updating Clash Royale tag');
     }
     return false;
@@ -113,5 +116,6 @@ export function useUser() {
     error,
     updateClashRoyaleTag,
     session,
+    accessToken,
   };
-}
+};
