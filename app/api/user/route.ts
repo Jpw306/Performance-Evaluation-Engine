@@ -44,10 +44,9 @@ export async function POST(request: NextRequest)
   user.avatarUrl = avatarUrl || user.avatarUrl;
   user.name = name || user.name;
 
-  let groups: any[] = await Group.find({}).lean();
-  groups = groups.filter(g => g.people.includes(githubUsername));
-
+  let groups: any[] = await Group.find({});
   console.log('Fetched groups:', groups);
+  groups = groups.filter(g => g.people.includes(githubUsername));
 
   groups = groups.map(g => ({
     id: g._id,

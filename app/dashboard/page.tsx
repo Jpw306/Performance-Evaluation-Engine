@@ -1,5 +1,6 @@
 'use client';
 
+import NavBar from '@/components/NavBar';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { useUser } from '@/lib/useUser';
@@ -21,13 +22,11 @@ const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
         <Card onClick={handleClick}>
             <br></br>
             <CardHeader>
-                <CardTitle>Sample Group Name</CardTitle>
+                <CardTitle>{group.name || 'Unnamed Group'}</CardTitle>
             </CardHeader>
             <CardContent>
-                <p className="text-clash-black">This is a sample group with static text content. It shows what a group card would look like.</p>
                 <div className="mt-4 text-sm">
-                    <p className="text-clash-black">Members: 5</p>
-                    <p className="text-clash-black">Created: 2 weeks ago</p>
+                    <p className='text-clash-black'>Members: {group.numMembers || 0}</p>
                 </div>
             </CardContent>
         </Card>
@@ -161,52 +160,56 @@ const DashTemp = () => {
     }, [user]);
 
     return (
-        <div className='flex flex-col gap-8 p-8 w-3/4 mx-auto'>
-            <div>
-                Welcome {user?.name},
-            </div>
-            <div className='flex flex-row items-start gap-8'>
-                {/* Profile Picture Section - 1/3 width */}
-                <div className='w-1/3 flex flex-col items-center gap-4'>
-                    <Avatar style={{ width: '256px', height: '256px' }} className="rounded-full">
-                        {
-                            user?.avatarUrl ? (
-                                <AvatarImage src={user.avatarUrl} alt={user?.name} style={{ width: '256px', height: '256px' }} />
-                            ) : (
-                                <AvatarFallback className="text-2xl" style={{ width: '256px', height: '256px' }}>{user?.name?.[0] ?? ''}</AvatarFallback>
-                            )
-                        }
-                    </Avatar>
-                    <div className="text-center">
-                        <h3>GitHub Commits</h3>
-                        <p className="text-clash-white">
-                            {getGithubDisplayText()}
-                        </p>
-                        <h3>Clash Stats</h3>
-                        <p className="text-clash-white whitespace-pre-line">
-                            {getClashDisplayText()}
-                        </p>
-                    </div>
-                </div>
-                
-                {/* Group Cards Section - 2/3 width */}
-                <div className='w-2/3'>
-                    {user?.groups.length || 0 > 0 ? (
-                        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4'>
-                            {user?.groups.map((group, index) => (
-                                <GroupCard key={index} group={group} />
-                            ))}
+        <main className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] text-clash-white p-8 font-text">
+            <div className='flex flex-col gap-8 p-8 w-3/4 mx-auto'>
+                <NavBar></NavBar>
+                <div className='flex flex-row items-start gap-8'>
+                    {/* Profile Picture Section - 1/3 width */}
+                    <div className='w-1/3 flex flex-col items-center gap-4 bg-clash-dark'>
+                        <Avatar style={{ width: '256px', height: '256px' }} className="rounded-full">
+                            {
+                                user?.avatarUrl ? (
+                                    <AvatarImage src={user.avatarUrl} alt={user?.name} style={{ width: '256px', height: '256px' }} />
+                                ) : (
+                                    <AvatarFallback className="text-2xl" style={{ width: '256px', height: '256px' }}>{user?.name?.[0] ?? ''}</AvatarFallback>
+                                )
+                            }
+                        </Avatar>
+                        <div>
+                            <br></br>
+                            {user?.name}
                         </div>
-                    ) : (
-                        <div className='flex items-center justify-center h-64'>
-                            <p className='text-clash-white text-lg text-center'>
-                                You are currently not in any groups
+                        <div className="text-center">
+                            <h3>GitHub Commits</h3>
+                            <p className="text-clash-white">
+                                {getGithubDisplayText()}
+                            </p>
+                            <h3>Clash Stats</h3>
+                            <p className="text-clash-white whitespace-pre-line">
+                                {getClashDisplayText()}
                             </p>
                         </div>
-                    )}
+                    </div>
+                    
+                    {/* Group Cards Section - 2/3 width */}
+                    <div className='w-2/3'>
+                        {user?.groups.length || 0 > 0 ? (
+                            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4'>
+                                {user?.groups.map((group, index) => (
+                                    <GroupCard key={index} group={group} />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className='flex items-center justify-center h-64'>
+                                <p className='text-clash-white text-lg text-center'>
+                                    You are currently not in any groups
+                                </p>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
-        </div>
+        </main>
     );
 };
 
