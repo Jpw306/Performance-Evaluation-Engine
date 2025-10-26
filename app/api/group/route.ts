@@ -27,7 +27,7 @@ export async function POST(request: NextRequest)
       return NextResponse.json({ error: 'GitHub username not found in session' }, { status: 400 });
 
     const body = await request.json();
-    const { repositoryUrl } = body;
+    const { name, repositoryUrl } = body;
 
     if (!repositoryUrl)
       return NextResponse.json({ error: 'Repository URL is required' }, { status: 400 });
@@ -49,12 +49,15 @@ export async function POST(request: NextRequest)
 
     await dbConnect();
 
-    const newGroup = new Group({
+    const groupData = {
       people: [githubUsername],
-      repo: repo,
+      repositoryUrl: repositoryUrl,
+      name: name,
       createdBy: githubUsername,
       createdAt: new Date()
-    });
+    };
+
+    const newGroup = new Group(groupData);
 
     const savedGroup = await newGroup.save();
 
@@ -66,8 +69,9 @@ export async function POST(request: NextRequest)
 
     return NextResponse.json({
       id: savedGroup._id,
+      name: savedGroup.name,
       people: savedGroup.people,
-      repo: savedGroup.repo,
+      repositoryUrl: savedGroup.repositoryUrl,
       createdBy: savedGroup.createdBy,
       createdAt: savedGroup.createdAt
     });

@@ -3,4 +3,5 @@ export interface Group {
     repositoryUrl: string;
     createdBy: string;
     createdAt: Date;
+    name: string;
 };

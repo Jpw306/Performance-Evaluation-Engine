@@ -1,11 +1,42 @@
+'use client';
+
 import Link from 'next/link';
+import { signOut } from 'next-auth/react';
 
 export default function NavBar() {
+  const handleSignOut = () => {
+    signOut({ callbackUrl: '/' });
+  };
+  const navigateHome = () => {
+    signOut({ callbackUrl: '/dashboard' });
+  };
+  const navigateLeaderboard = () => {
+    signOut({ callbackUrl: '/leaderboard' });
+  };
+  const navigateDashboard = () => {
+    signOut({ callbackUrl: '/dashboard' });
+  };  
+
   return (
     <nav className='flex justify-center gap-6 text-neutral-300'>
-      <Link href='/' className='hover:text-yellow-400'>Compass</Link>
-      <Link href='/leaderboard' className='hover:text-yellow-400'>Leaderboard</Link>
-      <Link href='/dashboard' className='hover:text-yellow-400'>Dashboard</Link>
+      <span 
+        onClick={navigateLeaderboard}
+        className='hover:text-yellow-400 font-headline cursor-pointer'
+      >
+        Leaderboard&emsp;
+      </span>
+      <span 
+        onClick={navigateDashboard}
+        className='hover:text-yellow-400 font-headline cursor-pointer'
+      >
+        Dashboard&emsp;
+      </span>
+      <span 
+        onClick={handleSignOut}
+        className='hover:text-yellow-400 font-headline cursor-pointer'
+      >
+        Log Out
+      </span>
     </nav>
   );
 }

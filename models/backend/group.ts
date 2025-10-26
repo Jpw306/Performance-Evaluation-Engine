@@ -3,6 +3,7 @@ import { Schema, model, models } from 'mongoose';
 const GroupSchema = new Schema({
   people: [String],
   repositoryUrl: String,
+  name: String,
   createdBy: String,
   createdAt: {
     type: Date,

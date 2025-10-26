@@ -1,100 +1,71 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import { User } from '@/models/backend/user';
+import { Group } from '@/models/backend/group';
 
-export async function POST(request: NextRequest) {
-  try {
-    await dbConnect();
-    
-    const { githubUsername, name, photoIcon, clashRoyaleTag } = await request.json();
+export async function POST(request: NextRequest)
+{
+  const { githubUsername, name, avatarUrl, clashRoyaleTag } = await request.json();
 
-    if (!githubUsername || !name) {
-      return NextResponse.json(
-        { error: 'Missing required fields' },
-        { status: 400 }
-      );
-    }
-    
-    let user = await User.findOne({ githubUsername }).catch(()=>null);
-    
-    if (user) {
-      user.name = name;
-      user.photoIcon = photoIcon;
-      // Only update clashRoyaleTag if it's provided in the request
-      if (clashRoyaleTag !== undefined) {
-        user.clashRoyaleTag = clashRoyaleTag;
-      }
-      await user.save();
-    } else {
-      // Create new user
-      user = new User({
-        githubUsername,
-        name,
-        photoIcon,
-        clashRoyaleTag: clashRoyaleTag || '', // Default empty if not provided
-        groups: [], // Initialize empty groups array
-        pendingInvitations: [], // Initialize empty pending invitations array
-      });
-      await user.save();
-    }
+  const dbError = await dbConnect()
+    .then(() => null)
+    .catch(() => true);
 
-    return NextResponse.json({
-      id: user.id,
-      name: user.name,
-      photoIcon: user.photoIcon,
-      githubUsername: user.githubUsername,
-      clashRoyaleTag: user.clashRoyaleTag,
-      groups: user.groups || [], // Include groups in response
-      pendingInvitations: user.pendingInvitations || [], // Include pending invitations
+  if(dbError)
+    return NextResponse.json({ error: 'Database connection error' }, { status: 500 });
+
+  const user = await User.findOne({ githubUsername })
+    .catch(() => null);
+
+  if(!user)
+  {
+    const newUser = new User({
+      id: githubUsername,
+      githubUsername,
+      name: name || '',
+      avatarUrl: avatarUrl || '',
+      clashRoyaleTag: clashRoyaleTag || '',
+      groups: [],
     });
     
-  } catch (error) {
-    console.error('Error managing user:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
-  }
-}
-
-export async function GET(request: NextRequest) {
-  try {
-    await dbConnect();
-    
-    const { searchParams } = new URL(request.url);
-    const githubUsername = searchParams.get('githubUsername');
-    
-    if (!githubUsername) {
-      return NextResponse.json(
-        { error: 'GitHub username is required' },
-        { status: 400 }
-      );
-    }
-
-    const user = await User.findOne({ githubUsername });
-    
-    if (!user) {
-      return NextResponse.json(
-        { error: 'User not found' },
-        { status: 404 }
-      );
-    }
+    await newUser.save();
 
     return NextResponse.json({
-      id: user.id,
-      name: user.name,
-      photoIcon: user.photoIcon,
-      githubUsername: user.githubUsername,
-      clashRoyaleTag: user.clashRoyaleTag,
-      groups: user.groups || [], // Include groups in response
-      pendingInvitations: user.pendingInvitations || [], // Include pending invitations
+      name: newUser.name,
+      avatarUrl: newUser.avatarUrl,
+      githubUsername: newUser.githubUsername,
+      clashRoyaleTag: newUser.clashRoyaleTag,
+      groups: [],
     });
-    
-  } catch (error) {
-    console.error('Error fetching user:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
   }
-}
+
+  user.clashRoyaleTag = clashRoyaleTag || user.clashRoyaleTag;
+  user.avatarUrl = avatarUrl || user.avatarUrl;
+  user.name = name || user.name;
+
+  let groups: any[] = await Group.find({}).lean();
+  
+  groups = groups.filter(g => g.people.includes(githubUsername));
+
+  const formattedGroups = groups.map(g => ({
+    id: g._id,
+    name: g.name,
+    repositoryUrl: g.repositoryUrl,
+    numMembers: g.people.length,
+    createdBy: g.createdBy,
+    createdAt: g.createdAt
+  }));
+
+  user.groups = groups.map(g => g._id.toString());
+  
+  await user.save();
+
+  return NextResponse.json({
+    name: user.name,
+    avatarUrl: user.avatarUrl,
+    githubUsername: user.githubUsername,
+    clashRoyaleTag: user.clashRoyaleTag,
+    groups: formattedGroups,
+  });
+};
