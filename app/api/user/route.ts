@@ -44,6 +44,9 @@ export async function POST(request: NextRequest)
   user.name = name || user.name;
 
   let groups = await Group.find({ people: { $in: [githubUsername] } }).catch(() => []);
+
+  console.log('Fetched groups:', groups);
+  
   groups = groups.map(g => ({
     id: g._id,
     name: g.name,
