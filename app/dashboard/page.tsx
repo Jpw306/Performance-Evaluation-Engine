@@ -258,6 +258,10 @@ const DashTemp = () => {
     };
         
     useEffect(() => {
+        if (user && !user.clashRoyaleTag) {
+            window.location.href = '/profile';
+            return;
+        }
         fetchCommits();
         fetchClashData();
     // eslint-disable-next-line react-hooks/exhaustive-deps

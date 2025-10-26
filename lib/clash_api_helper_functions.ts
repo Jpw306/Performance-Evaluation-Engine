@@ -13,25 +13,23 @@ function mapCardsToObject(cardArray: ApiCard[]): Record<string, number> {
   }, {} as Record<string, number>);
 }
 
-// get just the first 5 logs
-export function sliceRawLogs(rawJson: unknown): ApiBattleLog[] {
-    if (!Array.isArray(rawJson)) return [];
+export function sliceRawLogs(rawJson: unknown): ApiBattleLog[]
+{
+    if (!Array.isArray(rawJson)) 
+        return [];
+
     const typedLogs = rawJson as ApiBattleLog[];
     return typedLogs.slice(0, Math.min(5, typedLogs.length));
 }
 
-// turn the first 5 logs into shorter json (saves on tokens)
-export function transformBattleLogs(battleLogs: ApiBattleLog[], clashId: string): ParsedBattle[] {
+export function transformBattleLogs(battleLogs: ApiBattleLog[], clashId: string): ParsedBattle[]
+{
     return battleLogs.map(log => {
         let myData = log.team[0];
         const opponentData = log.opponent[0];
 
-        // account for 2v2 matches:
-        if (log.team[1]) {
-            if (log.team[1].tag == clashId) {
-                myData = log.team[1];
-            }
-        }
+        if (log.team[1] && log.team[1].tag == clashId)
+            myData = log.team[1];
 
         return {
             myPlayerTag: myData.tag,
@@ -43,14 +41,18 @@ export function transformBattleLogs(battleLogs: ApiBattleLog[], clashId: string)
     });
 }
 
-export function sliceAndTransform(rawJson: unknown, clashId: string): ParsedBattle[] {
+export function sliceAndTransform(rawJson: unknown, clashId: string): ParsedBattle[]
+{
     return transformBattleLogs(sliceRawLogs(rawJson), clashId);
 }
 
-// determine the winner of a match based on crown count
-export function getMatchOutcome(myCrowns: number, opponentsCrowns: number): MatchOutcome {
-    if (myCrowns > opponentsCrowns) return 'Win';
-    else if (myCrowns < opponentsCrowns) return 'Loss';
-    else return 'Draw';
+export function getMatchOutcome(myCrowns: number, opponentsCrowns: number): MatchOutcome
+{
+    if (myCrowns > opponentsCrowns)
+        return 'Win';
+    else if (myCrowns < opponentsCrowns)
+        return 'Loss';
+    else
+        return 'Draw';
 }
 
