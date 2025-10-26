@@ -49,7 +49,7 @@ export default function DashboardPage() {
   return (
     <main className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] bg-cover bg-center text-clash-white p-8 font-text flex flex-col items-center">
       <h1 className="font-clash text-4xl uppercase tracking-tightest text-clash-gold mb-10">
-        {user?.name}'s Group Dashboard
+        {user?.name}&apos;s Group Dashboard
       </h1>
 
       <section className="flex flex-col gap-16 w-full max-w-5xl items-center">

@@ -86,7 +86,7 @@ Please try again later.`);
                   Analyzing...
                 </div>
               ) : (
-                "Let's Go!"
+                'Let\'s Go!'
               )}
             </button>
           </div>
