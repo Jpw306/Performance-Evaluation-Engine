@@ -29,7 +29,7 @@ export default function LandingPage() {
           <div style={{ width: '40%' }} className="text-center space-y-6">
             <div className="space-y-2">
               <div className="text-4xl font-headline text-supercell-yellow">
-                🏆 Battle Arena 🏆
+                🏆 Performance Evaluation Engine 🏆
               </div>
               <div className="text-lg text-clash-white/80">
                 Ready to prove your worth?
@@ -49,7 +49,7 @@ export default function LandingPage() {
           <div style={{ width: '60%' }} className="space-y-6 text-clash-white/90">
             <div>
               <h3 className="text-2xl font-headline text-supercell-blue mb-4">
-                What is Battle Arena?
+                What is the Performance Evaluation Engine?
               </h3>
               <p className="text-lg leading-relaxed">
                 The ultimate performance evaluation engine that combines your coding prowess with your Clash Royale mastery! 
