@@ -127,7 +127,7 @@ export default function DashboardPage() {
                 Invite Member
               </button>
             </DialogTrigger>
-            <DialogContent className='bg-clash-dark border-clash-blue'>
+            <DialogContent className='w-3/4 bg-clash-dark border-clash-blue'>
               <DialogHeader>
                 <DialogTitle className='text-clash-white'>Invite New Member</DialogTitle>
               </DialogHeader>
@@ -149,9 +149,8 @@ export default function DashboardPage() {
                 <div className='flex justify-end space-x-2'>
                   <Button 
                     type='button' 
-                    variant='outline' 
                     onClick={() => setIsInviteDialogOpen(false)}
-                    className='border-clash-blue text-clash-white hover:bg-clash-blue/20'
+                    className='bg-clash-blue hover:bg-clash-blue/80 text-white'
                     disabled={isInviting}
                   >
                     Cancel
