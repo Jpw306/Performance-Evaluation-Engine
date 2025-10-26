@@ -13,7 +13,7 @@ import { transformBattleLogs } from '@/lib/clash_api_helper_functions';
 import dbConnect from '@/lib/mongodb';
 import { User } from '@/models/backend/user';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]/route';
+import authOptions from '@/lib/auth';
 
 interface SessionUser {
   githubUsername?: string;

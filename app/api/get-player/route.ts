@@ -4,7 +4,7 @@ import { CLASH_API_BASE_URL } from '@/lib/constants';
 import dbConnect from '@/lib/mongodb';
 import { User } from '@/models/backend/user';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]/route';
+import authOptions from '@/lib/auth';
 
 interface SessionUser {
   githubUsername?: string;

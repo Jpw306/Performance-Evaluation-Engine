@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../../auth/[...nextauth]/route';
 import { User } from '../../../../models/backend/user';
 import { Invite } from '../../../../models/backend/invite';
 import { Group } from '../../../../models/backend/group';
 import dbConnect from '../../../../lib/mongodb';
+import authOptions from '@/lib/auth';
 
 interface SessionUser {
     githubUsername?: string;
