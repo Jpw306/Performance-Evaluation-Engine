@@ -6,6 +6,8 @@ const UserSchema = new Schema({
     photoIcon: String,
     githubUsername: String,
     clashRoyaleTag: String,
+    groups: [String], // Array of group IDs
+    pendingInvitations: [String], // Array of invitation IDs
 });
 
 export const User = models.User || model('User', UserSchema);

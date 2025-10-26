@@ -1,38 +1,63 @@
 'use client';
 
 import { useUser } from '../../lib/useUser';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { useState } from 'react';
 
 export default function Profile() {
-  const { user, loading, error, session } = useUser();
-  const [clashRoyaleTag, setClashRoyaleTag] = useState('');
+  const { user, loading, error, session, updateClashRoyaleTag } = useUser();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
-  const [success, setSuccess] = useState('');
+  const router = useRouter();
+  
+  // Use the user's existing tag as the default value
+  const [clashRoyaleTag, setClashRoyaleTag] = useState('');
 
-  if (!session) {
-    return (
-      <div className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] bg-cover bg-center bg-no-repeat flex justify-center items-center">
-        <div className="absolute inset-0 bg-black/40"></div>
-        <div className="relative z-10 bg-gradient-to-b from-slate-900/95 to-slate-800/95 backdrop-blur-sm rounded-3xl p-8 border-2 border-clash-blue/50">
-          <h2 className="headline text-3xl font-bold text-clash-gold drop-shadow-lg text-center">
-            🔐 PLEASE SIGN IN
-          </h2>
-          <p className="text-clash-light text-center mt-4">Access your profile to continue</p>
-        </div>
-      </div>
-    );
-  }
+  // Redirect to root if not logged in (wait a bit for session to load)
+  useEffect(() => {
+    if (!loading && !session) {
+      const timer = setTimeout(() => {
+        router.push('/');
+      }, 1500); // Wait 1.5 seconds before redirecting
+      
+      return () => clearTimeout(timer);
+    }
+  }, [loading, session, router]);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    const tagToSubmit = clashRoyaleTag || user?.clashRoyaleTag || '';
+    
+    if (!tagToSubmit.trim()) {
+      setSubmitError('Clash Royale tag is required.');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitError('');
+
+    const success = await updateClashRoyaleTag(tagToSubmit.trim());
+    
+    if (success) {
+      // Redirect to dashboard on success
+      router.push('/dashboard');
+    } else {
+      setSubmitError('Failed to update tag. Please try again.');
+    }
+    
+    setIsSubmitting(false);
+  };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] bg-cover bg-center bg-no-repeat flex justify-center items-center">
-        <div className="absolute inset-0 bg-black/40"></div>
-        <div className="relative z-10 bg-gradient-to-b from-slate-900/95 to-slate-800/95 backdrop-blur-sm rounded-3xl p-8 border-2 border-clash-blue/50">
-          <h2 className="headline text-3xl font-bold text-clash-gold drop-shadow-lg text-center animate-pulse">
-            ⚡ LOADING...
-          </h2>
-          <div className="w-16 h-1 bg-gradient-to-r from-clash-blue to-clash-gold mx-auto rounded-full mt-4 animate-pulse"></div>
+      <div className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] bg-cover bg-center bg-no-repeat flex items-center justify-center">
+        <div className="bg-gradient-to-b from-slate-900/95 to-slate-800/95 backdrop-blur-sm rounded-3xl shadow-xl p-8 border border-clash-blue/50">
+          <div className="flex flex-col items-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-clash-gold mb-4"></div>
+            <h2 className="text-xl font-bold text-clash-light">Loading...</h2>
+          </div>
         </div>
       </div>
     );
@@ -40,138 +65,80 @@ export default function Profile() {
 
   if (error || !user) {
     return (
-      <div className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] bg-cover bg-center bg-no-repeat flex justify-center items-center">
-        <div className="absolute inset-0 bg-black/40"></div>
-        <div className="relative z-10 bg-gradient-to-b from-red-900/95 to-slate-800/95 backdrop-blur-sm rounded-3xl p-8 border-2 border-red-500/50">
-          <h2 className="headline text-3xl font-bold text-red-400 drop-shadow-lg text-center">
-            ⚠️ ERROR
-          </h2>
-          <p className="text-clash-light text-center mt-4">Failed to load profile. Please refresh the page.</p>
+      <div className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] bg-cover bg-center bg-no-repeat flex items-center justify-center">
+        <div className="bg-gradient-to-b from-red-900/95 to-slate-800/95 backdrop-blur-sm rounded-3xl shadow-xl p-8 border border-red-500/50">
+          <div className="flex flex-col items-center text-center">
+            <h2 className="text-xl font-bold text-red-400 mb-4">Error Loading Profile</h2>
+            <p className="text-clash-light mb-4">{error || 'Failed to load user data'}</p>
+            <button
+              onClick={() => router.push('/')}
+              className="px-6 py-2 bg-gradient-to-r from-clash-blue to-clash-gold text-white font-bold rounded-lg hover:scale-105 transform transition"
+            >
+              Go Back
+            </button>
+          </div>
         </div>
       </div>
     );
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const tagToSave = clashRoyaleTag || (user?.clashRoyaleTag || '');
-    
-    if (!tagToSave.trim()) {
-      setSubmitError('Clash Royale tag is required.');
-      return;
-    }
-    
-    setSubmitError('');
-    setSuccess('');
-    
-    try {
-      const response = await fetch('/api/user', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          githubUsername: user.githubUsername,
-          name: user.name,
-          photoIcon: user.photoIcon,
-          clashRoyaleTag: tagToSave.trim()
-        }),
-      });
-
-      if (response.ok) {
-        setSuccess('Clash Royale tag updated successfully!');
-        setClashRoyaleTag(''); // Clear the input since it's now saved
-      } else {
-        const errorData = await response.json();
-        setSubmitError(errorData.error || 'Failed to update Clash Royale tag.');
-      }
-    } catch (error) {
-      console.error('Error updating Clash Royale tag:', error);
-      setSubmitError('Failed to update Clash Royale tag.');
-    }
-  };
-
   return (
-    <main className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] bg-cover bg-center bg-no-repeat flex flex-col justify-center items-center p-4">
-      {/* Overlay for better readability */}
-      <div className="absolute inset-0 bg-black/40"></div>
-      
-      {/* Main content card */}
-      <div className="relative z-10 bg-gradient-to-b from-slate-900/95 to-slate-800/95 backdrop-blur-sm rounded-3xl shadow-2xl p-8 w-full max-w-md border-2 border-clash-blue/50">
-        {/* Header with glow effect */}
-        <div className="text-center mb-8">
-          <h1 className="headline text-5xl font-bold mb-2 text-clash-gold drop-shadow-lg">
-            PROFILE
-          </h1>
-          <div className="w-24 h-1 bg-gradient-to-r from-clash-blue to-clash-gold mx-auto rounded-full"></div>
-        </div>
-
-        {/* Profile picture with enhanced styling */}
-        <div className="relative mb-6">
-          <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-r from-clash-blue to-clash-gold p-1">
+    <div className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] bg-cover bg-center bg-no-repeat flex items-center justify-center p-4">
+      <div className="bg-gradient-to-b from-slate-900/95 to-slate-800/95 backdrop-blur-sm rounded-3xl shadow-xl p-8 w-full max-w-md border border-clash-blue/50">
+        <div className="flex flex-col items-center mb-6">
+          {/* User Avatar */}
+          <div className="relative mb-4">
             <Image
-              src={user.photoIcon || 'https://via.placeholder.com/150'}
-              alt={`${user.name}'s profile picture`}
-              width={120}
-              height={120}
-              className="w-full h-full rounded-full object-cover bg-slate-800"
+              src={user.photoIcon || '/avatars/ava.png'}
+              alt={`${user.name}'s avatar`}
+              width={100}
+              height={100}
+              className="rounded-full border-4 border-clash-gold shadow-lg"
             />
           </div>
-          {/* Glow effect behind profile picture */}
-          <div className="absolute inset-0 w-32 h-32 mx-auto rounded-full bg-clash-blue/20 blur-xl -z-10"></div>
+          
+          {/* User Name */}
+          <h1 className="text-2xl font-bold text-clash-light mb-2">
+            Welcome, {user.name}!
+          </h1>
+          
+          <p className="text-clash-gold text-sm text-center">
+            Enter your Clash Royale tag to get started
+          </p>
         </div>
 
-        {/* User info */}
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold mb-3 text-clash-light drop-shadow-md">{user.name}</h2>
-          <div className="bg-slate-800/60 rounded-xl p-3 border border-clash-blue/30">
-            <p className="text-lg text-clash-gray">
-              <span className="text-clash-blue font-semibold">@{user.githubUsername}</span>
-            </p>
-          </div>
-        </div>
-
-        {/* Form section */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="clashRoyaleTag" className="block text-xl font-bold mb-3 text-clash-gold drop-shadow-sm">
-              ⚔️ CLASH ROYALE TAG
+            <label htmlFor="clashRoyaleTag" className="block text-clash-gold font-semibold mb-2">
+              Clash Royale Tag
             </label>
-            <div className="relative">
-              <input
-                type="text"
-                id="clashRoyaleTag"
-                value={clashRoyaleTag || (user?.clashRoyaleTag || '')}
-                onChange={(e) => setClashRoyaleTag(e.target.value)}
-                className="w-full p-4 border-2 border-clash-blue/50 rounded-xl bg-slate-900/80 text-clash-light text-lg font-semibold focus:outline-none focus:border-clash-gold focus:ring-2 focus:ring-clash-gold/50 transition-all duration-300 placeholder-clash-gray/60"
-                placeholder="#YOURTAG"
-              />
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-clash-blue/10 to-clash-gold/10 pointer-events-none"></div>
-            </div>
+            <input
+              type="text"
+              id="clashRoyaleTag"
+              value={clashRoyaleTag || user?.clashRoyaleTag || ''}
+              onChange={(e) => setClashRoyaleTag(e.target.value)}
+              className="w-full p-3 rounded-lg bg-slate-800 text-clash-light border border-clash-blue focus:ring-2 focus:ring-clash-gold focus:outline-none placeholder-slate-400"
+              placeholder="#YourTag"
+              disabled={isSubmitting}
+            />
           </div>
           
-          {/* Error and success messages */}
           {submitError && (
-            <div className="bg-red-900/80 border border-red-500/50 rounded-lg p-3">
-              <p className="text-red-300 text-sm font-semibold">{submitError}</p>
-            </div>
-          )}
-          {success && (
-            <div className="bg-green-900/80 border border-green-500/50 rounded-lg p-3">
-              <p className="text-green-300 text-sm font-semibold">{success}</p>
-            </div>
+            <p className="text-red-400 text-sm bg-red-900/20 p-2 rounded-lg border border-red-500/30">
+              {submitError}
+            </p>
           )}
           
-          {/* Submit button */}
           <button
             type="submit"
-            className="w-full py-4 bg-gradient-to-r from-clash-blue via-clash-gold to-clash-blue hover:from-clash-gold hover:via-clash-blue hover:to-clash-gold text-white font-bold text-xl rounded-xl shadow-xl hover:shadow-2xl transform hover:scale-105 transition-all duration-300 border-2 border-clash-gold/50 relative overflow-hidden group"
+            disabled={isSubmitting}
+            className="w-full py-3 bg-gradient-to-r from-clash-blue to-clash-gold text-white font-bold rounded-lg hover:scale-105 transform transition disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
           >
-            <span className="relative z-10 drop-shadow-lg">⚡ SAVE PROFILE ⚡</span>
-            <div className="absolute inset-0 bg-gradient-to-r from-clash-gold/20 to-clash-blue/20 transform translate-x-full group-hover:translate-x-0 transition-transform duration-500"></div>
+            {isSubmitting ? 'Updating...' : 'Save Clash Royale Tag'}
           </button>
         </form>
       </div>
-    </main>
+    </div>
   );
 }
