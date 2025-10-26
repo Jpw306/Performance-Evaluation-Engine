@@ -7,15 +7,15 @@ export async function POST(request: NextRequest) {
     await dbConnect();
     
     const { githubUsername, name, photoIcon, clashRoyaleTag } = await request.json();
-    
+
     if (!githubUsername || !name) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
       );
     }
-
-    let user = await User.findOne({ githubUsername });
+    
+    let user = await User.findOne({ githubUsername }).catch(()=>null);
     
     if (user) {
       user.name = name;
@@ -28,7 +28,6 @@ export async function POST(request: NextRequest) {
     } else {
       // Create new user
       user = new User({
-        id: githubUsername, // id is same as githubUsername
         githubUsername,
         name,
         photoIcon,
