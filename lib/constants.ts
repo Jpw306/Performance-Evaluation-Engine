@@ -1,1 +1,1 @@
-export const CLASH_API_BASE_URL = 'https://api.clashroyale.com/v1';
+export const CLASH_API_BASE_URL = 'https://proxy.royaleapi.dev/v1';
