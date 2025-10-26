@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { useUser } from '@/lib/useUser';
 import { Group } from '@/models/group';
@@ -16,9 +14,9 @@ interface GroupCardProps {
 const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
 
     const handleClick = () => {
+        // Redirect to the dashboard
         window.location.href = '/dashboard/' + group.id;
     };
-
     return (
         <Card onClick={handleClick}>
             <br></br>
@@ -26,21 +24,26 @@ const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
                 <CardTitle>Sample Group Name</CardTitle>
             </CardHeader>
             <CardContent>
-                <p className='text-clash-black'>This is a sample group with static text content. It shows what a group card would look like.</p>
-                <div className='mt-4 text-sm'>
-                    <p className='text-clash-black'>Members: {group.numMembers}</p>
+                <p className="text-clash-black">This is a sample group with static text content. It shows what a group card would look like.</p>
+                <div className="mt-4 text-sm">
+                    <p className="text-clash-black">Members: 5</p>
+                    <p className="text-clash-black">Created: 2 weeks ago</p>
                 </div>
             </CardContent>
         </Card>
     );
 };
 
-const Home = () => {
+const DashTemp = () => {
 
     const { user } = useUser();
-  
+    
     const [githubData, setGithubData] = React.useState<any>(null);
     const [clashData, setClashData] = React.useState<any>(null);
+    
+    // Add loading states
+    const [githubLoading, setGithubLoading] = React.useState(false);
+    const [clashLoading, setClashLoading] = React.useState(false);
 
     const fetchGroupData = async (groupId: string) => {
         try
@@ -59,6 +62,7 @@ const Home = () => {
 
     const fetchCommits = async () => {
         if(user?.githubUsername) {
+            setGithubLoading(true);
             try {
                 const response = await fetch('/api/github', {
                     method: 'GET',
@@ -73,62 +77,137 @@ const Home = () => {
                 }
                 else {
                     console.error('Failed to fetch commit data');
+                    setGithubData(null); // Explicitly set to null on failure
                 }
             }
             catch(error) {
                 console.log('Error getting GitHub data:', error);
+                setGithubData(null); // Explicitly set to null on error
+            }
+            finally {
+                setGithubLoading(false);
             }
         }
+    }
+
+    const fetchClashData = async () => {
+        if(user?.clashRoyaleTag) {
+            setClashLoading(true);
+            try {
+                const response = await fetch('/api/get-player?userId=' + user.clashRoyaleTag, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                });
+
+                if(response.ok) {
+                    const data = await response.json();
+                    setClashData(data);
+                }
+                else {
+                    console.error('Failed to fetch clash data');
+                    setClashData(null); // Explicitly set to null on failure
+                }
+            }
+            catch (error) {
+                console.error('Error fetching clash data:', error);
+                setClashData(null); // Explicitly set to null on error
+            }
+            finally {
+                setClashLoading(false);
+            }
+        }
+    };
+
+    // Helper functions to determine display text
+    const getGithubDisplayText = () => {
+        if (githubLoading) return 'Loading...';
+        if (githubData && githubData.commits !== undefined) {
+            return `${githubData.commits} commits`;
+        }
+        return 'Data not found';
+    };
+
+    const getClashDisplayText = () => {
+        if (clashLoading) return 'Loading...';
+        
+        // Fix: Check for both null and undefined
+        if (clashData && clashData !== null) {
+            let returnString = "";
+            if (clashData.trophies !== undefined) {
+                returnString += clashData.trophies + " trophies\n";
+            }
+            if (clashData.wins !== undefined) {
+                returnString += clashData.wins + " wins\n";
+            }
+            if (clashData.losses !== undefined) {
+                returnString += clashData.losses + " losses\n";
+            }
+            if (clashData.battleCount !== undefined) {
+                returnString += clashData.battleCount + " total battles\n"; // Fixed typo: battleCounr -> battleCount
+            }
+            return returnString || "Stats Unavailable"; // Return the string or fallback to wins
+        }
+        
+        return 'Data not found';
     };
         
     useEffect(() => {
         fetchCommits();
+        fetchClashData();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
 
     return (
         <div className='flex flex-col gap-8 p-8 w-3/4 mx-auto'>
-            <div className='flex flex-row space-between items-center'>
-                <div>
-                    Welcome back, <span className='font-bold'>{user?.name}</span>!
-                </div>
-                <div>
-                    <Button variant='outline'>Create Group</Button>
-                    <Button variant='outline'>Join Group</Button>
-                </div>
+            <div>
+                Welcome {user?.name},
             </div>
             <div className='flex flex-row items-start gap-8'>
                 {/* Profile Picture Section - 1/3 width */}
                 <div className='w-1/3 flex flex-col items-center gap-4'>
-                    <Avatar style={{ width: '256px', height: '256px' }} className='rounded-full'>
+                    <Avatar style={{ width: '256px', height: '256px' }} className="rounded-full">
                         {
                             user?.avatarUrl ? (
                                 <AvatarImage src={user.avatarUrl} alt={user?.name} style={{ width: '256px', height: '256px' }} />
                             ) : (
-                                <AvatarFallback className='text-2xl' style={{ width: '256px', height: '256px' }}>{user?.name?.[0] ?? ''}</AvatarFallback>
+                                <AvatarFallback className="text-2xl" style={{ width: '256px', height: '256px' }}>{user?.name?.[0] ?? ''}</AvatarFallback>
                             )
                         }
                     </Avatar>
-                    <div className='text-center'>
-                        <p className='text-clash-white'>
-                            GitHub Commits: {githubData ? githubData.commitCount || 'Loading...' : 'Loading...'}
+                    <div className="text-center">
+                        <h3>GitHub Commits</h3>
+                        <p className="text-clash-white">
+                            {getGithubDisplayText()}
                         </p>
-                        <p className='text-clash-white'>
-                            Clash Stats: {clashData ? clashData.wins || 'Loading...' : 'Loading...'}
+                        <h3>Clash Stats</h3>
+                        <p className="text-clash-white whitespace-pre-line">
+                            {getClashDisplayText()}
                         </p>
                     </div>
                 </div>
                 
                 {/* Group Cards Section - 2/3 width */}
-                <div className='w-2/3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4'>
-                    {user?.groups.map((group, index) => (
-                        <GroupCard key={index} group={group} />
-                    ))}
+                <div className='w-2/3'>
+                    {user?.groups.length || 0 > 0 ? (
+                        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4'>
+                            {user?.groups.map((group, index) => (
+                                <GroupCard key={index} group={group} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className='flex items-center justify-center h-64'>
+                            <p className='text-clash-white text-lg text-center'>
+                                You are currently not in any groups
+                            </p>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
     );
 };
 
-export default Home;
+export default DashTemp;
