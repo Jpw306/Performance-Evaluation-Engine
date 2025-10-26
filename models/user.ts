@@ -19,6 +19,8 @@ interface GroupLogin {
   name: string;
   repositoryUrl: string;
   numMembers: number;
+  createdBy?: string;
+  createdAt?: Date;
 }
 
 export type { User, UserLogin, GroupLogin };
