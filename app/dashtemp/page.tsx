@@ -1,6 +1,7 @@
 'use client';
 
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { useUser } from '@/lib/useUser';
 import { Group } from '@/models/group';
@@ -14,9 +15,9 @@ interface GroupCardProps {
 const GroupCard: React.FC<GroupCardProps> = ({ id, group }) => {
 
     const handleClick = () => {
-        // Redirect to the dashboard
         window.location.href = '/dashboard/' + id;
     };
+
     return (
         <Card onClick={handleClick}>
             <CardHeader>
@@ -104,14 +105,20 @@ const DashTemp = () => {
 
     return (
         <div className='flex flex-col gap-8 p-8 w-3/4 mx-auto'>
-            <div>
-                Welcome {user?.name},
+            <div className='flex flex-row space-between items-center'>
+                <div>
+                    Welcome back, <span className='font-bold'>{user?.name}</span>!
+                </div>
+                <div>
+                    <Button variant="outline">Create Group</Button>
+                    <Button variant="outline">Join Group</Button>
+                </div>
             </div>
             <div className='flex flex-row items-center gap-4'>
                 <Avatar className="w-8 h-8 rounded-full">
                     {
-                        user?.photoIcon ? (
-                            <AvatarImage src={user.photoIcon} alt={user?.name} />
+                        user?.avatarUrl ? (
+                            <AvatarImage src={user.avatarUrl} alt={user?.name} />
                         ) : (
                             <AvatarFallback>{user?.name?.[0] ?? ''}</AvatarFallback>
                         )

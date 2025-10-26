@@ -3,7 +3,7 @@ import { Schema , model, models } from 'mongoose';
 const UserSchema = new Schema({
     id: String,
     name: String,
-    photoIcon: String,
+    avatarUrl: String,
     githubUsername: String,
     clashRoyaleTag: String,
     groups: [String], // Array of group IDs

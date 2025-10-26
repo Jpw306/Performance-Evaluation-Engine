@@ -89,7 +89,7 @@ export default function Profile() {
           {/* User Avatar */}
           <div className="relative mb-4">
             <Image
-              src={user.photoIcon || '/avatars/ava.png'}
+              src={user.avatarUrl || '/avatars/ava.png'}
               alt={`${user.name}'s avatar`}
               width={100}
               height={100}
