@@ -1,27 +1,18 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '../auth/[...nextauth]/route';
 
 interface SessionUser {
   githubUsername?: string;
-  name?: string;
-  email?: string;
-  image?: string;
+  [key: string]: unknown;
 }
 
-interface GitHubEvent {
-  type: string;
-  payload?: {
-    commits?: Array<{
-      author: {
-        name: string;
-        email: string;
-      };
-    }>;
-  };
+interface RepoCommitCount {
+  repo: string;
+  commits: number;
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     
@@ -41,9 +32,11 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'GitHub access token not found' }, { status: 400 });
     }
 
-    // Fetch user's public events to count commits
-    const eventsResponse = await fetch(
-      `https://api.github.com/users/${githubUsername}/events/public?per_page=100`,
+    console.log('Fetching GitHub data for user:', githubUsername);
+
+    // Get user's repositories first
+    const reposResponse = await fetch(
+      'https://api.github.com/user/repos?per_page=100&sort=updated&type=all',
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -53,51 +46,70 @@ export async function GET(request: NextRequest) {
       }
     );
 
-    if (!eventsResponse.ok) {
-      console.error('GitHub API error:', eventsResponse.status, eventsResponse.statusText);
+    if (!reposResponse.ok) {
+      console.error('GitHub repos API error:', reposResponse.status, reposResponse.statusText);
       return NextResponse.json(
-        { error: 'Failed to fetch GitHub data' },
-        { status: eventsResponse.status }
+        { error: 'Failed to fetch GitHub repositories' },
+        { status: reposResponse.status }
       );
     }
 
-    const events: GitHubEvent[] = await eventsResponse.json();
-    
-    // Count commits from push events in the last 30 days
+    const repos = await reposResponse.json();
+    console.log(`Found ${repos.length} repositories`);
+
+    // Count commits from the last 30 days across all repositories
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-    
-    let recentCommits = 0;
-    
-    events.forEach(event => {
-      if (event.type === 'PushEvent' && event.payload?.commits) {
-        recentCommits += event.payload.commits.length;
-      }
-    });
+    const since = thirtyDaysAgo.toISOString();
 
-    // Also try to get total public repositories count
-    const userResponse = await fetch(
-      `https://api.github.com/users/${githubUsername}`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          Accept: 'application/vnd.github+json',
-          'User-Agent': 'performance-evaluation-engine',
-        },
-      }
-    );
+    let totalCommits = 0;
+    const repoCommitCounts: RepoCommitCount[] = [];
 
-    let totalRepos = 0;
-    if (userResponse.ok) {
-      const userData = await userResponse.json();
-      totalRepos = userData.public_repos || 0;
+    // Check up to 10 most recently updated repos to avoid rate limits
+    const reposToCheck = repos.slice(0, 10);
+
+    for (const repo of reposToCheck) {
+      try {
+        const commitsResponse = await fetch(
+          `https://api.github.com/repos/${repo.full_name}/commits?author=${githubUsername}&since=${since}&per_page=100`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              Accept: 'application/vnd.github+json',
+              'User-Agent': 'performance-evaluation-engine',
+            },
+          }
+        );
+
+        if (commitsResponse.ok) {
+          const commits = await commitsResponse.json();
+          const commitCount = commits.length;
+          totalCommits += commitCount;
+          
+          if (commitCount > 0) {
+            repoCommitCounts.push({
+              repo: repo.name,
+              commits: commitCount
+            });
+          }
+          
+          console.log(`${repo.name}: ${commitCount} commits`);
+        } else {
+          console.log(`Failed to fetch commits for ${repo.name}:`, commitsResponse.status);
+        }
+      } catch (error) {
+        console.error(`Error fetching commits for ${repo.name}:`, error);
+      }
     }
+
+    console.log(`Total commits in last 30 days: ${totalCommits}`);
 
     return NextResponse.json({
       username: githubUsername,
-      commits: recentCommits,
-      totalRepos: totalRepos,
-      period: 'last 30 days'
+      commits: totalCommits,
+      totalRepos: repos.length,
+      period: 'last 30 days',
+      repoBreakdown: repoCommitCounts
     });
 
   } catch (error) {
