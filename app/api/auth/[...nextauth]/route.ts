@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+
 import NextAuth from 'next-auth';
 import GithubProvider from 'next-auth/providers/github';
 import { NextAuthOptions } from 'next-auth';
@@ -8,6 +9,11 @@ const authOptions: NextAuthOptions = {
     GithubProvider({
       clientId: process.env.GITHUB_ID!,
       clientSecret: process.env.GITHUB_SECRET!,
+      authorization: {
+        params: {
+          scope: 'read:user user:email repo'
+        }
+      }
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
@@ -19,10 +25,14 @@ const authOptions: NextAuthOptions = {
           avatar_url: session.user.image || undefined,
           githubUsername: token.githubUsername,
         };
+        session.accessToken = token.accessToken;
       }
       return session;
     },
-    async jwt({ token, profile }: { token: any; profile?: any }) {
+    async jwt({ token, profile, account }: { token: any; profile?: any; account?: any }) {
+      if (account) {
+        token.accessToken = account.access_token;
+      }
       if (profile) {
         token.githubUsername = profile.login;
         

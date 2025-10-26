@@ -48,8 +48,8 @@ export function sliceAndTransform(rawJson: unknown, clashId: string): ParsedBatt
 
 // determine the winner of a match based on crown count
 export function getMatchOutcome(myCrowns: number, opponentsCrowns: number): MatchOutcome {
-    if (myCrowns > opponentsCrowns) return "Win";
-    else if (myCrowns < opponentsCrowns) return "Loss";
-    else return "Draw";
+    if (myCrowns > opponentsCrowns) return 'Win';
+    else if (myCrowns < opponentsCrowns) return 'Loss';
+    else return 'Draw';
 }
 
