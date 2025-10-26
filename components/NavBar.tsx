@@ -20,12 +20,6 @@ export default function NavBar() {
   return (
     <nav className='flex justify-center gap-6 text-neutral-300'>
       <span 
-        onClick={navigateHome}
-        className='hover:text-yellow-400 font-headline cursor-pointer'
-      >
-        Compass&emsp;
-      </span>
-      <span 
         onClick={navigateLeaderboard}
         className='hover:text-yellow-400 font-headline cursor-pointer'
       >
