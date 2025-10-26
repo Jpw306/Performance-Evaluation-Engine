@@ -3,13 +3,14 @@
 import NavBar from '@/components/NavBar';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { useUser } from '@/lib/useUser';
+import { useRouter } from 'next/navigation';
 
 export default function DeckTutorPage() {
-  // All hooks must be called before any conditional returns
-  const { user, loading: userLoading, session } = useUser();
+  const router = useRouter();
+  const { user, session } = useUser();
   const [isLoading, setIsLoading] = useState(false);
   const [tutorResponse, setTutorResponse] = useState(`
 # Welcome to Deck Tutor! 🏆
@@ -25,22 +26,7 @@ Here's what I can do:
 Let's get started!
   `);
 
-  // If not logged in, show login message
-  if (!userLoading && !session) {
-    return (
-      <main className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] text-clash-white p-8 font-text">
-        <NavBar />
-        <div className="max-w-4xl mx-auto mt-12 px-4">
-          <Card className="bg-gradient-to-b from-slate-900/95 to-slate-800/95 backdrop-blur-sm border-clash-blue/50 p-8 lg:p-10 rounded-xl shadow-lg">
-            <div className="text-center">
-              <h2 className="text-2xl font-headline mb-4 text-clash-gold-border">Please Log In</h2>
-              <p className="text-clash-white">You need to be logged in to use the Deck Tutor.</p>
-            </div>
-          </Card>
-        </div>
-      </main>
-    );
-  }
+
   const getDeckRecommendation = async () => {
     console.log('Button clicked, user:', user);
     if (!user || !user.githubUsername) {
@@ -53,7 +39,7 @@ Please make sure you have set up your Clash Royale account in your profile first
     setIsLoading(true);
     try {
       console.log('Making API call with userId:', user.githubUsername);
-      const response = await fetch(`/api/get-recommended-deck?userId=${user.githubUsername}`);
+      const response = await fetch('/api/get-recommended-deck');
       const data = await response.json();
       
       if (response.ok) {
@@ -73,37 +59,39 @@ Please try again later.`);
   };
 
   return (
-    <main className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] text-clash-white p-8 font-text">
+    <main className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] text-clash-white font-text px-4 py-8 md:px-8 lg:px-16">
       <NavBar />
-      <div className="max-w-4xl mx-auto mt-12 px-4">
-        <h1 className="text-4xl font-headline mb-8 text-center text-clash-gold-border drop-shadow-lg">
+      <div className="deck-tutor-container mt-12">
+        <h1 className="text-5xl font-headline mb-12 text-center text-clash-gold-border drop-shadow-lg">
           Deck Tutor
         </h1>
         
-        <Card className="bg-gradient-to-b from-slate-900/95 to-slate-800/95 backdrop-blur-sm border-clash-blue/50 p-8 lg:p-10 rounded-xl shadow-lg">
-          <div className="prose prose-invert prose-p:bg-slate-900/50 prose-p:p-4 prose-p:rounded-lg prose-headings:drop-shadow-lg prose-li:bg-slate-900/50 prose-li:p-2 prose-li:rounded-md max-w-none">
+        <Card className="bg-gradient-to-b from-slate-900/95 to-slate-800/95 backdrop-blur-sm border-clash-gold-border/30 p-8 lg:p-12 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
+          <div className="prose prose-invert prose-h1:text-4xl prose-h1:font-headline prose-h1:text-clash-gold-border prose-h1:drop-shadow-lg prose-p:bg-clash-dark/50 prose-p:p-6 prose-p:rounded-lg prose-headings:drop-shadow-lg prose-li:bg-clash-dark/50 prose-li:p-4 prose-li:rounded-md max-w-none">
             <ReactMarkdown>
               {tutorResponse}
             </ReactMarkdown>
           </div>
-          <div className="mt-8 flex justify-center">
-            <Button
+          <div className="mt-12 flex justify-center">
+            <button
               onClick={getDeckRecommendation}
               disabled={isLoading}
-              className="bg-clash-blue hover:bg-clash-blue/80 text-white font-headline text-lg px-8 py-4"
+              className="clash-button max-w-md"
             >
               {isLoading ? (
-                <>
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
+                <div className="flex items-center gap-4">
+                  <div className="relative w-8 h-8">
+                    <div className="animate-spin h-8 w-8 border-4 border-clash-gold-border/30 border-t-clash-gold-border rounded-full"></div>
+                    <div className="absolute inset-0 animate-pulse flex items-center justify-center">
+                      <div className="w-3 h-3 bg-clash-blue rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"></div>
+                    </div>
+                  </div>
                   Analyzing...
-                </>
+                </div>
               ) : (
                 "Let's Go!"
               )}
-            </Button>
+            </button>
           </div>
         </Card>
       </div>

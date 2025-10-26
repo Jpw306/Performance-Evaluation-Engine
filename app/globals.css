@@ -114,6 +114,25 @@ p, span, li {
   color: var(--clash-gold);
 }
 
+/* Deck Tutor page specific styles */
+.deck-tutor-container {
+  max-width: 3xl;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+@media (min-width: 768px) {
+  .deck-tutor-container {
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .deck-tutor-container {
+    padding: 2rem;
+  }
+}
+
 .subtext {
   font-family: var(--font-text);
   color: var(--clash-light);
