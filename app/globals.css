@@ -185,6 +185,11 @@ p, span, li {
   color: black;
 }
 
+.border-clash-danger {
+  border-color: #ef4444;  /* This is the equivalent of Tailwind's red-500 */
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); /* Adding a subtle glow effect */
+}
+
 .text-clash-gold-shadow {
   color: var(--clash-gold-dark);
 }
@@ -343,6 +348,13 @@ p, span, li {
       0 10px 16px rgba(0, 0, 0, 0.5),
       0 0 40px rgba(255, 215, 0, 0.8);
   }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px) rotate(-1deg); }
+  50% { transform: translateX(2px) rotate(1deg); }
+  75% { transform: translateX(-2px) rotate(-1deg); }
 }
 
 @theme inline {
