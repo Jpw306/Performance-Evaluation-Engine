@@ -15,7 +15,7 @@ interface SessionUser {
 
 export async function DELETE(
     request: NextRequest,
-    { params }: { params: Promise<{ inviteId: string }> }
+    context: { params: Promise<{ inviteId: string }> }
 ) {
     try {
         const session = await getServerSession(authOptions);
@@ -31,7 +31,7 @@ export async function DELETE(
 
         await dbConnect();
 
-        const { inviteId } = await params; // Await params
+        const { inviteId } = await context.params; // Await params
         const invite = await Invite.findById(inviteId);
         
         if (!invite)
@@ -55,7 +55,7 @@ export async function DELETE(
 
 export async function POST(
     request: NextRequest,
-    { params }: { params: Promise<{ inviteId: string }> }
+    context: { params: Promise<{ inviteId: string }> }
 ) {
     try {
         const session = await getServerSession(authOptions);
@@ -71,7 +71,7 @@ export async function POST(
 
         await dbConnect();
 
-        const { inviteId } = await params; // Await params
+        const { inviteId } = await context.params; // Await params
         const invite = await Invite.findById(inviteId);
         
         if (!invite)

@@ -14,7 +14,7 @@ interface SessionUser {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { groupId: string } }
+  context: { params: Promise<{ groupId: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -30,7 +30,7 @@ export async function GET(
     if (!accessToken)
       return NextResponse.json({ error: 'GitHub access token not found in session' }, { status: 400 });
 
-    const { groupId } = await params;
+    const { groupId } = await context.params;
     if (!groupId)
       return NextResponse.json({ error: 'Group ID is required' }, { status: 400 });
 
