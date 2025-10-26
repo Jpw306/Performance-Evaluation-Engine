@@ -16,22 +16,22 @@ export default {
           dark: "#23272A",
           blue: "#1A8FE3",
           gold: "#FFD700",
-          goldShadow: "#945021",
+          goldDark: "#945021",
           goldBorder: "#FCDB21",
+          goldBackground: "#F2B73F",
           gray: "#A2A2A2",
           light: "#F5F6FA",
         },
       },
       fontFamily: {
-        // Use the CSS variable from next/font/local for your custom Clash Royale fonts
         clash: ["var(--font-clash)", "Impact", "sans-serif"],
       },
       letterSpacing: {
-        tightest: "-0.015em", // roughly -15 tracking
+        tightest: "-0.015em",
       },
       lineHeight: {
-        tightHeadline: "1.1", // ~10% leading
-        text: "1.45", // ~45% leading
+        tightHeadline: "1.1",
+        text: "1.45",
       },
     },
   },
