@@ -191,6 +191,83 @@ p, span, li {
     0 6px 0 var(--clash-gold-dark),
     0 6px 12px rgba(0, 0, 0, 0.5),
     inset 0 0 0 2px rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.clash-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 0 var(--clash-gold-dark),
+    0 8px 16px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.2);
+}
+
+.clash-card:active {
+  transform: translateY(2px);
+  box-shadow: 
+    0 4px 0 var(--clash-gold-dark),
+    0 4px 8px rgba(0, 0, 0, 0.4),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.clash-group-card {
+  background: linear-gradient(180deg, var(--clash-dark) 0%, var(--clash-black) 100%);
+  border: 4px solid var(--clash-gold);
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 
+    0 6px 0 var(--clash-gold-dark),
+    0 8px 16px rgba(0, 0, 0, 0.5);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clash-group-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 8px 0 var(--clash-gold-dark),
+    0 12px 24px rgba(0, 0, 0, 0.6);
+}
+
+.clash-group-title {
+  font-family: var(--font-headline);
+  font-size: 1.5rem;
+  color: var(--clash-gold);
+  text-transform: uppercase;
+  text-align: center;
+  margin-bottom: 1rem;
+  text-shadow: 
+    -2px -2px 0 var(--clash-gold-dark),
+     2px -2px 0 var(--clash-gold-dark),
+    -2px  2px 0 var(--clash-gold-dark),
+     2px  2px 0 var(--clash-gold-dark);
+}
+
+.clash-group-text {
+  font-family: var(--font-text);
+  color: var(--clash-white);
+  text-align: center;
+  text-shadow: 
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+}
+
+.clash-groups-container {
+  background: linear-gradient(
+    180deg,
+    var(--clash-dark) 0%,
+    var(--clash-black) 100%
+  );
+  border: 4px solid var(--clash-gold);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  box-shadow: 
+    0 6px 0 var(--clash-gold-dark),
+    0 6px 12px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.1);
 }
 
 /* Group Leaderboard Styles */

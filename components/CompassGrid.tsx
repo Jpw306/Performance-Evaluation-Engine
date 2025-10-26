@@ -116,7 +116,7 @@ export default function CompassGrid({ members, groupContext }: Props) {
   }, [members]);
 
   return (
-    <div className="w-full max-w-[800px] bg-gradient-to-b from-clash-dark to-clash-black rounded-2xl border-[3px] border-clash-goldDark p-6 shadow-[0_8px_0_#945021,0_12px_24px_rgba(0,0,0,0.5)]">
+    <div className="w-full max-w-[800px] bg-clash-dark rounded-2xl border-4 border-clash-gold p-6 shadow-[0_8px_0_#945021,0_12px_24px_rgba(0,0,0,0.5)]">
       <h3 className="font-clash text-2xl uppercase tracking-tightest text-clash-gold mb-4 text-center">
         Group Performance
       </h3>
