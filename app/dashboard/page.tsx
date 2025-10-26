@@ -196,7 +196,7 @@ const DashTemp = () => {
                         <Avatar style={{ width: '256px', height: '256px' }} className="rounded-full">
                             {
                                 user?.avatarUrl ? (
-                                    <AvatarImage src={user.avatarUrl} alt={user?.name} style={{ width: '256px', height: '256px' }} />
+                                    <AvatarImage src={user.avatarUrl} alt={user?.name} style={{ width: '256px', height: '256px', padding: '20px' }} />
                                 ) : (
                                     <AvatarFallback className="text-2xl" style={{ width: '256px', height: '256px' }}>{user?.name?.[0] ?? ''}</AvatarFallback>
                                 )
@@ -221,9 +221,11 @@ const DashTemp = () => {
                                 className="clash-button"
                                 style={{
                                     height: '45px',
-                                    minWidth: '120px',
-                                    fontSize: '1.2rem',
-                                    borderRadius: '0.5rem'
+                                    width: '150px',
+                                    minWidth: '48px',
+                                    fontSize: '1rem',
+                                    borderRadius: '0.5rem',
+                                    margin: '20px'
                                 }}
                                 onClick={() => setIsDialogOpen(true)}
                             >
@@ -233,9 +235,11 @@ const DashTemp = () => {
                                 className="clash-button"
                                 style={{
                                     height: '45px',
-                                    minWidth: '120px',
-                                    fontSize: '1.2rem',
-                                    borderRadius: '0.5rem'
+                                    width: '150px',
+                                    minWidth: '48px',
+                                    fontSize: '1rem',
+                                    borderRadius: '0.5rem',
+                                    margin: '20px'
                                 }}
                                 onClick={() => console.log('Button 2 clicked')}
                             >
