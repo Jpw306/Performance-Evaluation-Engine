@@ -8,7 +8,7 @@ export default function NavBar() {
     signOut({ callbackUrl: '/' });
   };
   const navigateHome = () => {
-    signOut({ callbackUrl: '/home' });
+    signOut({ callbackUrl: '/dashboard' });
   };
   const navigateLeaderboard = () => {
     signOut({ callbackUrl: '/leaderboard' });

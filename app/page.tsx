@@ -11,7 +11,7 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (session) {
-      router.push('/home');
+      router.push('/dashboard');
     }
   }, [session, router]);
 

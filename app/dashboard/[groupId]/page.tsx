@@ -9,7 +9,7 @@ import { useUser } from '@/lib/useUser';
 import { Group } from '@/models/group';
 import React, { useEffect } from 'react';
 
-const DashboardPage = () => {
+const GroupDashboard = () => {
     const { user } = useUser();
     
     const [groupIds, setGroupIds] = React.useState<string[]>([]);
@@ -99,4 +99,6 @@ const DashboardPage = () => {
       </div>
     </main>
   );
-}
+};
+
+export default GroupDashboard;

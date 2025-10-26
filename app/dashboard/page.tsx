@@ -26,13 +26,13 @@ const GroupCard: React.FC<GroupCardProps> = ({ id, group }) => {
                 <CardTitle>Sample Group Name</CardTitle>
             </CardHeader>
             <CardContent>
-                <p className="text-clash-black">This is a sample group with static text content. It shows what a group card would look like.</p>
-                <div className="mt-4 text-sm">
-                    <p className="text-clash-black">Members: 5</p>
-                    <p className="text-clash-black">Created: 2 weeks ago</p>
+                <p className='text-clash-black'>This is a sample group with static text content. It shows what a group card would look like.</p>
+                <div className='mt-4 text-sm'>
+                    <p className='text-clash-black'>Members: 5</p>
+                    <p className='text-clash-black'>Created: 2 weeks ago</p>
                     {
                         group.createdAt && (
-                            <p className="text-clash-black">Created: {new Date(group.createdAt).toLocaleDateString()}</p>
+                            <p className='text-clash-black'>Created: {new Date(group.createdAt).toLocaleDateString()}</p>
                         )
                     }
                 </div>
@@ -41,7 +41,7 @@ const GroupCard: React.FC<GroupCardProps> = ({ id, group }) => {
     );
 };
 
-const DashTemp = () => {
+const Home = () => {
 
     const { user } = useUser();
     
@@ -63,41 +63,6 @@ const DashTemp = () => {
             console.error('Error fetching group data:', error);
         }
         return null;
-    };
-
-    const fetchGroups = async () => {
-        if (user?.groups && user.groups.length > 0)
-        {
-            try
-            {
-                const response = await fetch('/api/user?githubUsername=' + user.githubUsername, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-
-                    setGroupIds(data.groups);
-
-                    const tmp: Group[] = [];
-                    await Promise.all(data.groups.map(async (groupId: string) => {
-                        const groupData = await fetchGroupData(groupId);
-                        if (groupData)
-                            tmp.push(groupData);
-                    }));
-
-                    setGroups(tmp);
-                } else
-                    console.error('Failed to fetch groups');
-            }
-            catch (error)
-            {
-                console.error('Error fetching groups:', error);
-            }
-        }
     };
 
     const fetchCommits = async () => {
@@ -123,35 +88,9 @@ const DashTemp = () => {
             }
         }
     };
-
-    const fetchClashData = async () => {
-        if(user?.clashRoyaleTag) {
-            try {
-                const response = await fetch('/api/clash', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-
-                if(response.ok) {
-                    const data = await response.json();
-                    setClashData(data);
-                }
-                else {
-                    console.error('Failed to fetch clash data');
-                }
-            }
-            catch (error) {
-                console.error('Error fetching clash data:', error);
-            }
-        }
-    };
         
     useEffect(() => {
-        fetchGroups();
         fetchCommits();
-        fetchClashData();
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [user]);
@@ -163,27 +102,27 @@ const DashTemp = () => {
                     Welcome back, <span className='font-bold'>{user?.name}</span>!
                 </div>
                 <div>
-                    <Button variant="outline">Create Group</Button>
-                    <Button variant="outline">Join Group</Button>
+                    <Button variant='outline'>Create Group</Button>
+                    <Button variant='outline'>Join Group</Button>
                 </div>
             </div>
             <div className='flex flex-row items-start gap-8'>
                 {/* Profile Picture Section - 1/3 width */}
                 <div className='w-1/3 flex flex-col items-center gap-4'>
-                    <Avatar style={{ width: '256px', height: '256px' }} className="rounded-full">
+                    <Avatar style={{ width: '256px', height: '256px' }} className='rounded-full'>
                         {
                             user?.avatarUrl ? (
                                 <AvatarImage src={user.avatarUrl} alt={user?.name} style={{ width: '256px', height: '256px' }} />
                             ) : (
-                                <AvatarFallback className="text-2xl" style={{ width: '256px', height: '256px' }}>{user?.name?.[0] ?? ''}</AvatarFallback>
+                                <AvatarFallback className='text-2xl' style={{ width: '256px', height: '256px' }}>{user?.name?.[0] ?? ''}</AvatarFallback>
                             )
                         }
                     </Avatar>
-                    <div className="text-center">
-                        <p className="text-clash-white">
+                    <div className='text-center'>
+                        <p className='text-clash-white'>
                             GitHub Commits: {githubData ? githubData.commitCount || 'Loading...' : 'Loading...'}
                         </p>
-                        <p className="text-clash-white">
+                        <p className='text-clash-white'>
                             Clash Stats: {clashData ? clashData.wins || 'Loading...' : 'Loading...'}
                         </p>
                     </div>
@@ -200,4 +139,4 @@ const DashTemp = () => {
     );
 };
 
-export default DashTemp;
+export default Home;
