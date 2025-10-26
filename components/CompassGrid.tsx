@@ -1,5 +1,3 @@
-'use client';
-
 import { useMemo } from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Props as RechartsProps } from 'recharts/types/component/DefaultLegendContent';
@@ -118,12 +116,6 @@ export default function CompassGrid({ members, groupContext }: Props) {
     }));
   }, [members]);
 
-  const COLORS = {
-    high: '#FFD700',
-    mid: '#1A8FE3',
-    low: '#945021',
-  };
-
   return (
     <div className="w-full max-w-[800px] bg-gradient-to-b from-clash-dark to-clash-black rounded-2xl border-[3px] border-clash-goldDark p-6 shadow-[0_8px_0_#945021,0_12px_24px_rgba(0,0,0,0.5)]">
       <h3 className="font-clash text-2xl uppercase tracking-tightest text-clash-gold mb-4 text-center">
@@ -158,10 +150,13 @@ export default function CompassGrid({ members, groupContext }: Props) {
             }}
           />
           <Tooltip content={CustomTooltip} cursor={{ strokeDasharray: '3 3', stroke: '#FFD700' }} />
-          <Scatter 
-            data={data} 
-            shape={function(props: any) {
-              return <CustomScatterShape {...props} usersInDanger={usersInDanger} />;
+          <Scatter
+            data={data}
+            // Recharts expects a shape function with a looser param type (unknown).
+            // Accept unknown here and cast to our CustomScatterShapeProps before rendering.
+            shape={(props: unknown) => {
+              const p = props as CustomScatterShapeProps;
+              return <CustomScatterShape {...p} usersInDanger={usersInDanger} />;
             }}
           />
         </ScatterChart>
