@@ -1,6 +1,6 @@
 'use client';
 
-import NavBar from '@/components/NavBar';
+import MainLayout from '../layouts/MainLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import React, { useState, useEffect } from 'react';
@@ -56,15 +56,15 @@ Please try again later.`);
   };
 
   return (
-    <main className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] text-clash-white font-text px-4 py-8 md:px-8 lg:px-16">
-      <NavBar />
-      <div className="deck-tutor-container mt-12">
-        <h1 className="text-5xl font-headline mb-12 text-center text-clash-gold-border drop-shadow-lg">
-          Deck Tutor
-        </h1>
+    <MainLayout>
+      <div className="p-8">
+        <div className="deck-tutor-container">
+          <h1 className="text-5xl font-headline mb-12 text-center text-clash-gold-border drop-shadow-lg">
+            Deck Tutor
+          </h1>
         
-        <Card className="bg-gradient-to-b from-slate-900/95 to-slate-800/95 backdrop-blur-sm border-clash-gold-border/30 p-8 lg:p-12 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
-          <div className="prose prose-invert prose-h1:text-4xl prose-h1:font-headline prose-h1:text-clash-gold-border prose-h1:drop-shadow-lg prose-p:bg-clash-dark/50 prose-p:p-6 prose-p:rounded-lg prose-headings:drop-shadow-lg prose-li:bg-clash-dark/50 prose-li:p-4 prose-li:rounded-md max-w-none">
+        <Card className="deck-tutor-card">
+          <div className="prose prose-invert prose-h1:text-4xl prose-h1:font-headline prose-h1:text-clash-gold prose-h1:drop-shadow-lg prose-p:bg-clash-dark/50 prose-p:p-6 prose-p:rounded-lg prose-headings:drop-shadow-lg prose-li:bg-clash-dark/50 prose-li:p-4 prose-li:rounded-md max-w-none">
             <ReactMarkdown>
               {tutorResponse}
             </ReactMarkdown>
@@ -92,6 +92,7 @@ Please try again later.`);
           </div>
         </Card>
       </div>
-    </main>
+      </div>
+    </MainLayout>
   );
 }

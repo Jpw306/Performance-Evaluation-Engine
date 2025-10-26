@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import NavBar from '@/components/NavBar';
+import MainLayout from '../layouts/MainLayout';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -24,17 +24,10 @@ const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
     };
 
     return (
-        <Card onClick={handleClick}>
-            <br></br>
-            <CardHeader>
-                <CardTitle>{group.name || 'Unnamed Group'}</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="mt-4 text-sm">
-                    <p className='text-clash-black'>Members: {group.numMembers || 0}</p>
-                </div>
-            </CardContent>
-        </Card>
+        <div className="clash-group-card" onClick={handleClick}>
+            <h3 className="clash-group-title">{group.name || 'Unnamed Group'}</h3>
+            <p className="clash-group-text">Members: {group.numMembers || 0}</p>
+        </div>
     );
 };
 
@@ -268,18 +261,18 @@ const DashTemp = () => {
     }, [user]);
 
     return (
-        <main className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] text-clash-white p-8 font-text">
-            <div className='flex flex-col gap-8 p-8 w-3/4 mx-auto'>
-                <NavBar></NavBar>
-                <div className='flex flex-row items-start gap-8'>
+        <MainLayout>
+            <div className='p-8'>
+                <div className='max-w-7xl mx-auto p-8'>
+                <div className='flex flex-row items-start gap-12'>
                     {/* Profile Picture Section - 1/3 width */}
-                    <div className='w-1/3 flex flex-col items-center gap-4 bg-clash-dark'>
-                        <Avatar style={{ width: '256px', height: '256px' }} className="rounded-full">
+                    <div className='w-1/3 flex flex-col items-center gap-4 bg-clash-dark rounded-2xl border-4 border-clash-gold p-6'>
+                        <Avatar className="w-64 h-64 rounded-full">
                             {
                                 user?.avatarUrl ? (
-                                    <AvatarImage src={user.avatarUrl} alt={user?.name} style={{ width: '256px', height: '256px', padding: '20px' }} />
+                                    <AvatarImage src={user.avatarUrl} alt={user?.name} className="w-full h-full" />
                                 ) : (
-                                    <AvatarFallback className="text-2xl" style={{ width: '256px', height: '256px' }}>{user?.name?.[0] ?? ''}</AvatarFallback>
+                                    <AvatarFallback className="text-4xl">{user?.name?.[0] ?? ''}</AvatarFallback>
                                 )
                             }
                         </Avatar>
@@ -297,31 +290,17 @@ const DashTemp = () => {
                                 {getClashDisplayText()}
                             </p>
                         </div>
-                        <div className="flex flex-row gap-4 w-full px-4 pb-4">
+                        <div className="flex flex-row justify-center gap-4 w-full p-4">
                             <button
-                                className="clash-button"
-                                style={{
-                                    height: '45px',
-                                    width: '150px',
-                                    minWidth: '48px',
-                                    fontSize: '1rem',
-                                    borderRadius: '0.5rem',
-                                    margin: '20px'
-                                }}
+                                className="clash-button-small"
+                                style={{ height: '50px', fontSize: '1.25rem', minWidth: '120px' }}
                                 onClick={() => setIsDialogOpen(true)}
                             >
                                 Create Group
                             </button>
                             <button
-                                className="clash-button"
-                                style={{
-                                    height: '45px',
-                                    width: '150px',
-                                    minWidth: '48px',
-                                    fontSize: '1rem',
-                                    borderRadius: '0.5rem',
-                                    margin: '20px'
-                                }}
+                                className="clash-button-small"
+                                style={{ height: '50px', fontSize: '1.25rem', minWidth: '40px' }}
                                 onClick={() => {
                                     setIsInvitesDialogOpen(true);
                                     fetchInvites();
@@ -333,7 +312,7 @@ const DashTemp = () => {
                     </div>
                     
                     {/* Group Cards Section - 2/3 width */}
-                    <div className='w-2/3'>
+                    <div className='w-2/3 ml-8'>
                         {/* Invites Dialog */}
                         <Dialog open={isInvitesDialogOpen} onOpenChange={setIsInvitesDialogOpen}>
                             <DialogContent className='clash-dialog'>
@@ -415,23 +394,27 @@ const DashTemp = () => {
                             </DialogContent>
                         </Dialog>
 
-                        {user?.groups.length || 0 > 0 ? (
-                            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4'>
-                                {user?.groups.map((group, index) => (
-                                    <GroupCard key={index} group={group} />
-                                ))}
-                            </div>
-                        ) : (
-                            <div className='flex items-center justify-center h-64'>
-                                <p className='text-clash-white text-lg text-center'>
-                                    You are currently not in any groups
-                                </p>
-                            </div>
-                        )}
+                        <div className="clash-leaderboard">
+                            <h2 className="clash-group-title mb-6">Your Groups</h2>
+                            {user?.groups.length || 0 > 0 ? (
+                                <div className='grid grid-cols-1 sm:grid-cols-2 gap-6'>
+                                    {user?.groups.map((group, index) => (
+                                        <GroupCard key={index} group={group} />
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className='flex items-center justify-center h-64'>
+                                    <p className='clash-group-text text-lg text-center'>
+                                        You are currently not in any groups
+                                    </p>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </div>
             </div>
-        </main>
+            </div>
+        </MainLayout>
     );
 };
 

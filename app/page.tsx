@@ -38,9 +38,9 @@ export default function LandingPage() {
             <div>
               <button 
                 onClick={() => signIn('github')}
-                className="bg-supercell-yellow hover:bg-supercell-yellow/90 text-supercell-black font-headline text-xl px-8 py-4 rounded-lg transition-all duration-300 transform hover:scale-105"
+                className="clash-button"
               >
-                🚀 Enter with GitHub
+                Enter with GitHub
               </button>
             </div>
           </div>

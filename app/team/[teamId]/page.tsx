@@ -1,4 +1,5 @@
 import React from 'react';
+import MainLayout from '../../layouts/MainLayout';
 
 type Props = { 
   params: Promise<{ teamId: string }>;
@@ -6,11 +7,12 @@ type Props = {
 
 export default async function TeamPage({ params }: Props) {
   const { teamId } = await params;
-  
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <h1 className="text-2xl font-semibold">Team {teamId}</h1>
-    </div>
+    <MainLayout>
+      <div className="flex items-center justify-center h-[calc(100vh-8vh)]">
+        <h1 className="text-2xl font-headline text-clash-gold">Team {teamId}</h1>
+      </div>
+    </MainLayout>
   );
 }
 
