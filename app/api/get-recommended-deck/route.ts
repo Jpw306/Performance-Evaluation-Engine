@@ -2,7 +2,7 @@
     GET Request
     Takes global userId as a parameter
     Fetches ClashID from Atlas
-    Gets match history from past 10 matches
+    Gets match history from past 5 matches
     Sends as prompt to Gemini and requests deck advice
     Returns gemini response
 */
