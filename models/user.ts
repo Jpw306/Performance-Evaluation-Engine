@@ -11,13 +11,15 @@ interface UserLogin {
   avatarUrl: string;
   githubUsername: string;
   clashRoyaleTag?: string;
-  groups: [{
-    id: string;
-    name: string;
-    repositoryUrl: string;
-    numMembers: number;
-  }]
+  groups: GroupLogin[];
 }
 
-export type { User, UserLogin };
+interface GroupLogin {
+  id: string;
+  name: string;
+  repositoryUrl: string;
+  numMembers: number;
+}
+
+export type { User, UserLogin, GroupLogin };
 

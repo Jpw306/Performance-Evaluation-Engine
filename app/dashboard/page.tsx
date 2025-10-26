@@ -6,11 +6,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { useUser } from '@/lib/useUser';
 import { Group } from '@/models/group';
+import { GroupLogin } from '@/models/user';
 import React, { useEffect } from 'react';
 
 interface GroupCardProps {
     id: string;
-    group: Group;
+    group: GroupLogin;
 };
 
 const GroupCard: React.FC<GroupCardProps> = ({ id, group }) => {
@@ -28,13 +29,7 @@ const GroupCard: React.FC<GroupCardProps> = ({ id, group }) => {
             <CardContent>
                 <p className='text-clash-black'>This is a sample group with static text content. It shows what a group card would look like.</p>
                 <div className='mt-4 text-sm'>
-                    <p className='text-clash-black'>Members: 5</p>
-                    <p className='text-clash-black'>Created: 2 weeks ago</p>
-                    {
-                        group.createdAt && (
-                            <p className='text-clash-black'>Created: {new Date(group.createdAt).toLocaleDateString()}</p>
-                        )
-                    }
+                    <p className='text-clash-black'>Members: {group.numMembers}</p>
                 </div>
             </CardContent>
         </Card>
@@ -44,9 +39,7 @@ const GroupCard: React.FC<GroupCardProps> = ({ id, group }) => {
 const Home = () => {
 
     const { user } = useUser();
-    
-    const [groupIds, setGroupIds] = React.useState<string[]>([]);
-    const [groups, setGroups] = React.useState<Group[]>([]);
+  
     const [githubData, setGithubData] = React.useState<any>(null);
     const [clashData, setClashData] = React.useState<any>(null);
 
@@ -130,8 +123,8 @@ const Home = () => {
                 
                 {/* Group Cards Section - 2/3 width */}
                 <div className='w-2/3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4'>
-                    {groups.map((group, index) => (
-                        <GroupCard key={index} id={groupIds[index]} group={group} />
+                    {user?.groups.map((group, index) => (
+                        <GroupCard key={index} group={group} />
                     ))}
                 </div>
             </div>
