@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { useUser } from '@/lib/useUser';
 import { GroupLogin } from '@/models/user';
 import React, { useEffect, useState } from 'react';
+import InviteCard from '@/components/InviteCard';
 
 interface GroupCardProps {
     group: GroupLogin;
@@ -48,8 +49,11 @@ const DashTemp = () => {
     
     // Create Group Dialog state
     const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isInvitesDialogOpen, setIsInvitesDialogOpen] = useState(false);
     const [groupName, setGroupName] = useState('');
     const [repoUrl, setRepoUrl] = useState('');
+    const [invites, setInvites] = useState<{ inviteId: string; groupName: string; }[]>([]);
+    const [invitesLoading, setInvitesLoading] = useState(false);
 
     const fetchCommits = async () => {
         if(user?.githubUsername && accessToken) {
@@ -146,6 +150,74 @@ const DashTemp = () => {
         }
         
         return 'Data not found';
+    };
+
+    const fetchInvites = async () => {
+        setInvitesLoading(true);
+        try {
+            const response = await fetch('/api/invite', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setInvites(data);
+            } else {
+                console.error('Failed to fetch invites');
+                setInvites([]);
+            }
+        } catch (error) {
+            console.error('Error fetching invites:', error);
+            setInvites([]);
+        } finally {
+            setInvitesLoading(false);
+        }
+    };
+
+    const handleAcceptInvite = async (inviteId: string) => {
+        try {
+            const response = await fetch(`/api/invite/${inviteId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                await refetchUser();
+                await fetchInvites();
+            } else {
+                console.error('Failed to accept invite');
+                alert('Failed to accept invite. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error accepting invite:', error);
+            alert('Error accepting invite. Please try again.');
+        }
+    };
+
+    const handleDeclineInvite = async (inviteId: string) => {
+        try {
+            const response = await fetch(`/api/invite/${inviteId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.ok) {
+                await fetchInvites();
+            } else {
+                console.error('Failed to decline invite');
+                alert('Failed to decline invite. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error declining invite:', error);
+            alert('Error declining invite. Please try again.');
+        }
     };
         
     // Handle create group form submission
@@ -247,7 +319,10 @@ const DashTemp = () => {
                                     borderRadius: '0.5rem',
                                     margin: '20px'
                                 }}
-                                onClick={() => console.log('Button 2 clicked')}
+                                onClick={() => {
+                                    setIsInvitesDialogOpen(true);
+                                    fetchInvites();
+                                }}
                             >
                                 View Invites
                             </button>
@@ -256,6 +331,33 @@ const DashTemp = () => {
                     
                     {/* Group Cards Section - 2/3 width */}
                     <div className='w-2/3'>
+                        {/* Invites Dialog */}
+                        <Dialog open={isInvitesDialogOpen} onOpenChange={setIsInvitesDialogOpen}>
+                            <DialogContent className='clash-dialog'>
+                                <DialogHeader className='clash-dialog-header'>
+                                    <DialogTitle className='clash-dialog-title'>Group Invites</DialogTitle>
+                                </DialogHeader>
+                                <div className="space-y-4 p-4 max-h-[60vh] overflow-y-auto">
+                                    {invitesLoading ? (
+                                        <p className="text-clash-white text-center">Loading invites...</p>
+                                    ) : invites.length > 0 ? (
+                                        invites.map((invite) => (
+                                            <InviteCard
+                                                key={invite.inviteId}
+                                                inviteId={invite.inviteId}
+                                                groupName={invite.groupName}
+                                                onAccept={handleAcceptInvite}
+                                                onDecline={handleDeclineInvite}
+                                            />
+                                        ))
+                                    ) : (
+                                        <p className="text-clash-white text-center">No pending invites</p>
+                                    )}
+                                </div>
+                            </DialogContent>
+                        </Dialog>
+
+                        {/* Create Group Dialog */}
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogContent className='clash-dialog'>
                                 <DialogHeader className='clash-dialog-header'>
