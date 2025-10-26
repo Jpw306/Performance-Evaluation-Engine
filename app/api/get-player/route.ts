@@ -2,6 +2,8 @@
 
 import { NextResponse } from 'next/server';
 import { CLASH_API_BASE_URL } from '@/lib/constants';
+import dbConnect from '@/lib/mongodb';
+import { User } from '@/models/backend/user';
 
 export async function GET(request : Request) {
 
@@ -10,12 +12,32 @@ export async function GET(request : Request) {
     const userId = searchParams.get('userId');
     if (!userId) return NextResponse.json({error: 'Missing userId in parameters!'}, {status: 400});
 
-    // get clash id from database
-    const tempClashId = process.env.TEMP_CLASH_ID; // TODO: replace this with permanent solution
-    if (!tempClashId) return NextResponse.json({error: 'Missing ClashID Tag!'}, {status: 400});
+    let clashId;
+    try {
+        await dbConnect();
+
+        const user = await User.findOne({ _id: userId });
+
+        if (!user) {
+            return NextResponse.json(
+                { error: 'User not found' },
+                { status: 404 }
+            );
+        }
+
+        clashId = user.clashRoyaleTag;
+    } catch (error) {
+        console.error('Err fetching user:', error);
+        return NextResponse.json(
+                { error: 'Internal server error' },
+                { status: 500 }
+        );
+    }
+        
+    if (!clashId) return NextResponse.json({error: 'Missing ClashID Tag!'}, {status: 400});
 
     // forward to clash api 
-    const res = await fetch(`${CLASH_API_BASE_URL}/players/${encodeURIComponent(tempClashId)}`, {
+    const res = await fetch(`${CLASH_API_BASE_URL}/players/${encodeURIComponent(clashId)}`, {
         headers: { Authorization: `Bearer ${process.env.CLASH_API_TOKEN}`}
     });
 

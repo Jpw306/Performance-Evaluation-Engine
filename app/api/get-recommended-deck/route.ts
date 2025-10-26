@@ -11,6 +11,8 @@ import { NextResponse } from "next/server";
 import { CLASH_API_BASE_URL } from "@/lib/constants";
 import { GoogleGenAI } from "@google/genai";
 import { sliceAndTransform, transformBattleLogs } from "@/lib/clash_api_helper_functions";
+import dbConnect from "@/lib/mongodb";
+import { User } from "@/models/backend/user";
 
 const ai = new GoogleGenAI({});
 
@@ -22,11 +24,33 @@ export async function GET(request : Request) {
     if (!userId) return NextResponse.json({error: 'Missing userId in parameters!'}, {status: 400});
 
     // get clash id from database
-    const tempClashId = process.env.TEMP_CLASH_ID; // TODO: replace this with permanent solution
-    if (!tempClashId) return NextResponse.json({error: 'Missing ClashID Tag!'}, {status: 400});
+    let clashId;
+
+    try {
+        await dbConnect();
+
+        const user = await User.findOne({ _id: userId });
+
+        if (!user) {
+            return NextResponse.json(
+                { error: 'User not found' },
+                { status: 404 }
+            );
+        }
+
+        clashId = user.clashRoyaleTag;
+    } catch (error) {
+        console.error('Err fetching user:', error);
+        return NextResponse.json(
+              { error: 'Internal server error' },
+              { status: 500 }
+        );
+    }
+
+    if (!clashId) return NextResponse.json({error: 'Missing ClashID Tag!'}, {status: 400});
 
     // forward to clash api - get user battlelog
-    const res = await fetch(`${CLASH_API_BASE_URL}/players/${encodeURIComponent(tempClashId)}/battlelog`, {
+    const res = await fetch(`${CLASH_API_BASE_URL}/players/${encodeURIComponent(clashId)}/battlelog`, {
         headers: { Authorization: `Bearer ${process.env.CLASH_API_TOKEN}`}
     });
 
@@ -34,7 +58,7 @@ export async function GET(request : Request) {
 
     // make json array of last 5 matches
     // get only matches, card names, opponent card names, outcome
-    const parsedData = sliceAndTransform(data, tempClashId); 
+    const parsedData = sliceAndTransform(data, clashId); 
     const dataAsText = JSON.stringify(parsedData);
 
     const promptQuestion : string = 
