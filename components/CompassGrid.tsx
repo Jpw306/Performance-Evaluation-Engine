@@ -1,8 +1,20 @@
-"use client";
+'use client';
 
-import { useMemo } from "react";
-import Image from "next/image";
-import { mockPlayers as dataPlayers } from "@/lib/mockData";
+import { useMemo } from 'react';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
+import { mockUser, mockPlayers as dataPlayers } from '../lib/mockData';
+
+interface Player {
+  id: number;
+  name: string;
+  commits: number;
+  wins: number;
+  losses: number;
+  avatar?: string;
+}
+
+const mockPlayers: Player[] = dataPlayers;
 
 export default function CompassGrid() {
   const players = useMemo(() => {

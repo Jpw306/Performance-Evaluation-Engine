@@ -1,6 +1,6 @@
 import CompassGrid from '@/components/CompassGrid';
 import LeaderboardTable from '@/components/LeaderboardTable';
-import { mockLeaderboard } from '@/lib/mockData';
+import { mockPlayers } from '@/lib/mockData';
 
 export default function DashboardPage() {
   return (
@@ -20,8 +20,8 @@ export default function DashboardPage() {
           <section className="bg-clash-white p-4 rounded-2xl shadow">
             <h3 className="text-lg font-headline text-clash-blue mb-3">Quick Stats</h3>
             <div className="space-y-2 text-sm text-clash-black">
-              <div className="flex justify-between"><span>Active players</span><span>{mockLeaderboard.length}</span></div>
-              <div className="flex justify-between"><span>Top scorer</span><span>{mockLeaderboard[0].name}</span></div>
+              <div className="flex justify-between"><span>Active players</span><span>{mockPlayers.length}</span></div>
+              <div className="flex justify-between"><span>Top scorer</span><span>{mockPlayers[0].name}</span></div>
             </div>
           </section>
         </aside>
