@@ -1,4 +1,6 @@
-"use client";
+'use client';
+
+import Image from 'next/image';
 
 interface Member {
   id: string;
@@ -36,15 +38,17 @@ export default function LeaderboardTable({ members }: Props) {
         <tbody>
           {sorted.map((p, i) => (
             <tr
-              key={p.id}
+              key={p.id || `member-${i}`}
               className="border-t border-clash-gray/40 hover:bg-clash-gold/5"
             >
               <td className="p-3">{i + 1}</td>
               <td className="p-3 flex items-center justify-center gap-3">
                 {p.photoIcon && (
-                  <img
+                  <Image
                     src={p.photoIcon}
                     alt={p.name}
+                    width={32}
+                    height={32}
                     className="w-8 h-8 rounded-full border-2 border-clash-gold"
                   />
                 )}

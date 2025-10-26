@@ -65,9 +65,8 @@ export async function POST(request: NextRequest)
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
     const senderUser = session.user as SessionUser;
-    const senderGithubUsername = senderUser.githubUsername;
-    
-    if (!senderGithubUsername)
+
+    if (!senderUser.githubUsername)
       return NextResponse.json({ error: 'GitHub username not found in session' }, { status: 400 });
 
     const accessToken = (session as { accessToken?: string })?.accessToken;
@@ -76,7 +75,15 @@ export async function POST(request: NextRequest)
       return NextResponse.json({ error: 'GitHub access token not found' }, { status: 400 });
 
     const body = await request.json();
+    console.log('Invite API received body:', body);
+    
     const { githubUsername: invitedGithubUsername, githubUrl, groupName } = body;
+    
+    console.log('Extracted values:', {
+      invitedGithubUsername,
+      githubUrl,
+      groupName
+    });
 
     if (!invitedGithubUsername || !githubUrl || !groupName)
       return NextResponse.json({ error: 'GitHub username, repository URL, and group name are required' }, { status: 400 });
@@ -94,7 +101,6 @@ export async function POST(request: NextRequest)
       return NextResponse.json({ error: 'Invited user does not have access to this repository' }, { status: 400 });
 
     const existingInvitation = await Invite.findOne({
-      senderGithubUsername,
       invitedGithubUsername,
       githubRepoUrl: githubUrl,
       groupName
@@ -104,7 +110,6 @@ export async function POST(request: NextRequest)
       return NextResponse.json({ error: 'An invitation to this user for this repository already exists' }, { status: 400 });
 
     const newInvitation = new Invite({
-      senderGithubUsername,
       invitedGithubUsername,
       githubRepoUrl: githubUrl,
       groupName
