@@ -112,7 +112,6 @@ export default function CompassGrid({ members, groupContext }: Props) {
       winRate: typeof m.winRate === 'number' ? Number(m.winRate.toFixed(1)) : 0,
       score: m.commits + (typeof m.winRate === 'number' ? m.winRate : 0),
       avatar: m.photoIcon, // Include the avatar URL
-      githubUsername: m.githubUsername, // Add githubUsername for danger zone check
     }));
   }, [members]);
 

@@ -63,8 +63,8 @@ Please try again later.`);
             Deck Tutor
           </h1>
         
-        <Card className="bg-gradient-to-b from-slate-900/95 to-slate-800/95 backdrop-blur-sm border-clash-gold-border/30 p-8 lg:p-12 rounded-xl shadow-[0_8px_32px_rgba(0,0,0,0.4)]">
-          <div className="prose prose-invert prose-h1:text-4xl prose-h1:font-headline prose-h1:text-clash-gold-border prose-h1:drop-shadow-lg prose-p:bg-clash-dark/50 prose-p:p-6 prose-p:rounded-lg prose-headings:drop-shadow-lg prose-li:bg-clash-dark/50 prose-li:p-4 prose-li:rounded-md max-w-none">
+        <Card className="deck-tutor-card">
+          <div className="prose prose-invert prose-h1:text-4xl prose-h1:font-headline prose-h1:text-clash-gold prose-h1:drop-shadow-lg prose-p:bg-clash-dark/50 prose-p:p-6 prose-p:rounded-lg prose-headings:drop-shadow-lg prose-li:bg-clash-dark/50 prose-li:p-4 prose-li:rounded-md max-w-none">
             <ReactMarkdown>
               {tutorResponse}
             </ReactMarkdown>

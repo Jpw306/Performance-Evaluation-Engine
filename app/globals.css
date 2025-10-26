@@ -98,12 +98,24 @@ h1, h2, h3, h4 {
   letter-spacing: -0.015em;
   line-height: 1.1;
   color: var(--clash-gold);
+  padding: 0.5rem 1rem;
+  text-shadow: 
+    -2px -2px 0 var(--clash-gold-dark),
+     2px -2px 0 var(--clash-gold-dark),
+    -2px  2px 0 var(--clash-gold-dark),
+     2px  2px 0 var(--clash-gold-dark);
 }
 
 p, span, li {
   font-family: var(--font-text);
   line-height: 1.45;
   color: var(--clash-light);
+  padding: 0.5rem;
+  text-shadow: 
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
 }
 
 /* Optional class-based helpers */
@@ -121,15 +133,36 @@ p, span, li {
   padding: 1rem;
 }
 
+.deck-tutor-card {
+  background: linear-gradient(
+    180deg,
+    var(--clash-dark) 0%,
+    rgba(24, 24, 24, 0.95) 100%
+  );
+  backdrop-filter: blur(10px);
+  border: 3px solid var(--clash-gold);
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
 @media (min-width: 768px) {
   .deck-tutor-container {
     padding: 1.5rem;
+  }
+  .deck-tutor-card {
+    padding: 2.5rem;
   }
 }
 
 @media (min-width: 1024px) {
   .deck-tutor-container {
     padding: 2rem;
+  }
+  .deck-tutor-card {
+    padding: 3rem;
   }
 }
 
@@ -143,15 +176,115 @@ p, span, li {
   color: var(--clash-blue);
 }
 
+/* Clash Component Styles */
+.clash-card {
+  background: linear-gradient(
+    180deg,
+    var(--clash-dark) 0%,
+    var(--clash-black) 100%
+  );
+  border: 4px solid var(--clash-gold);
+  border-radius: var(--radius);
+  padding: 1.5rem;
+  margin: 1rem 0;
+  box-shadow: 
+    0 6px 0 var(--clash-gold-dark),
+    0 6px 12px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+/* Group Leaderboard Styles */
+.clash-leaderboard {
+  background: linear-gradient(
+    180deg,
+    var(--clash-blue) 0%,
+    var(--clash-dark) 100%
+  );
+  border: none;
+  border-radius: var(--radius);
+  padding: 2rem;
+  box-shadow: 
+    0 6px 12px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.1);
+}
+
+.clash-leaderboard-title {
+  color: var(--clash-gold);
+  font-family: var(--font-headline);
+  text-transform: uppercase;
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  text-shadow: 
+    -2px -2px 0 var(--clash-gold-dark),
+     2px -2px 0 var(--clash-gold-dark),
+    -2px  2px 0 var(--clash-gold-dark),
+     2px  2px 0 var(--clash-gold-dark);
+}
+
+.clash-leaderboard-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 0.5rem;
+}
+
+.clash-leaderboard-header {
+  color: var(--clash-gold);
+  font-family: var(--font-headline);
+  text-transform: uppercase;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  text-shadow: 
+    -1px -1px 0 var(--clash-gold-dark),
+     1px -1px 0 var(--clash-gold-dark),
+    -1px  1px 0 var(--clash-gold-dark),
+     1px  1px 0 var(--clash-gold-dark);
+}
+
+.clash-leaderboard-cell {
+  padding: 1rem;
+  color: var(--clash-white);
+  background: rgba(0, 0, 0, 0.2);
+  text-shadow: 
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+}
+
+.clash-container {
+  background: linear-gradient(
+    180deg,
+    var(--clash-dark) 0%,
+    rgba(35, 39, 42, 0.95) 100%
+  );
+  border-radius: var(--radius);
+  padding: 2rem;
+  margin: 1rem 0;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
 /* Custom backgrounds */
 .bg-clash-dark {
-  background-color: var(--clash-dark);
+  background: linear-gradient(
+    180deg,
+    var(--clash-dark) 0%,
+    var(--clash-black) 100%
+  );
+  border-radius: var(--radius);
+  padding: 1rem;
 }
+
 .bg-clash-light {
   background-color: var(--clash-light);
+  border-radius: var(--radius);
+  padding: 1rem;
 }
+
 .bg-clash-black {
   background-color: var(--clash-black);
+  border-radius: var(--radius);
+  padding: 1rem;
 }
 
 /* Custom borders */
@@ -352,13 +485,35 @@ p, span, li {
 .text-clash-gold-shadow {
   color: var(--clash-gold-dark);
 }
+
 .text-clash-gold-border {
   color: var(--clash-white);
   text-shadow: 
-    -1px -1px 0 var(--clash-gold-dark),
-     1px -1px 0 var(--clash-gold-dark),
-    -1px  1px 0 var(--clash-gold-dark),
-     1px  1px 0 var(--clash-gold-dark);
+    -2px -2px 0 var(--clash-gold-dark),
+     2px -2px 0 var(--clash-gold-dark),
+    -2px  2px 0 var(--clash-gold-dark),
+     2px  2px 0 var(--clash-gold-dark);
+}
+
+.text-clash-outline {
+  text-shadow: 
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+}
+
+.text-clash-heading {
+  font-family: var(--font-headline);
+  text-transform: uppercase;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  padding: 0.75rem;
+  text-shadow: 
+    -2px -2px 0 var(--clash-gold-dark),
+     2px -2px 0 var(--clash-gold-dark),
+    -2px  2px 0 var(--clash-gold-dark),
+     2px  2px 0 var(--clash-gold-dark);
 }
 
 /* Clash Royale Dialog/Popup Component */
@@ -376,10 +531,16 @@ p, span, li {
   ) !important;
   
   /* Border & shadow effects */
-  border: 3px solid var(--clash-gold) !important;
+  border: 4px solid var(--clash-gold) !important;
+  border-radius: var(--radius) !important;
   box-shadow: 
-    0 0 20px rgba(255, 215, 0, 0.2),
-    0 10px 20px rgba(0, 0, 0, 0.4) !important;
+    0 6px 0 var(--clash-gold-dark),
+    0 8px 16px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.1),
+    0 0 20px rgba(255, 215, 0, 0.3) !important;
+  
+  /* Spacing */
+  padding: 1.5rem !important;
   
   /* Animation */
   animation: dialogAppear 0.3s ease-out;
@@ -477,7 +638,7 @@ p, span, li {
   cursor: pointer;
 }
 
-.clash-button:hover {
+.clash-button-small:hover {
   transform: translateY(-3px);
   box-shadow:
     0 10px 0 var(--clash-gold-dark),
@@ -485,13 +646,77 @@ p, span, li {
     0 0 30px rgba(255, 215, 0, 0.8);
 }
 
-.clash-button:active {
+.clash-button-small:active {
   transform: translateY(4px) scale(0.97);
   box-shadow:
     0 3px 0 var(--clash-gold-dark),
     0 6px 8px rgba(0, 0, 0, 0.3),
     0 0 10px rgba(255, 215, 0, 0.4);
 }
+
+.clash-button-small {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  /* Size & shape */
+  min-width: 40px;
+  height: 90px;
+  border-radius: 1rem;
+
+  /* Font */
+  font-family: var(--font-headline);
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: -0.015em;
+  color: var(--clash-white);
+  line-height: 1;
+
+  /* Gradient background */
+  background: linear-gradient(
+    180deg,
+    #FFD700 0%,
+    #F2B73F 100%
+  );
+
+  /* Border & shadow */
+  border: 4px solid var(--clash-gold-border);
+  box-shadow:
+    0 8px 0 var(--clash-gold-dark),
+    0 10px 16px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(255, 215, 0, 0.5);
+
+  /* Text shadow for the chunky look */
+  text-shadow:
+    -2px -2px 0 var(--clash-gold-dark),
+     2px -2px 0 var(--clash-gold-dark),
+    -3px  3px 0 var(--clash-gold-dark),
+     3px  3px 0 var(--clash-gold-dark);
+
+  /* Animation & interaction */
+  animation: clashGlow 2.8s ease-in-out infinite;
+  transition: transform 150ms ease, box-shadow 150ms ease;
+  cursor: pointer;
+}
+
+.clash-button-small:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 10px 0 var(--clash-gold-dark),
+    0 14px 20px rgba(0, 0, 0, 0.6),
+    0 0 30px rgba(255, 215, 0, 0.8);
+}
+
+.clash-button-small:active {
+  transform: translateY(4px) scale(0.97);
+  box-shadow:
+    0 3px 0 var(--clash-gold-dark),
+    0 6px 8px rgba(0, 0, 0, 0.3),
+    0 0 10px rgba(255, 215, 0, 0.4);
+}
+
 
 /* Gold aura pulse animation */
 @keyframes clashGlow {

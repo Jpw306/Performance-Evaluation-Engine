@@ -49,6 +49,7 @@ export default function DashboardPage() {
     "Time to level up! ⬆️"
   ];
 
+
   
   // Invite dialog state
   const [isInviteDialogOpen, setIsInviteDialogOpen] = useState(false);

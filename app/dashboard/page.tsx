@@ -297,31 +297,17 @@ const DashTemp = () => {
                                 {getClashDisplayText()}
                             </p>
                         </div>
-                        <div className="flex flex-row gap-4 w-full px-4 pb-4">
+                        <div className="flex flex-row justify-center gap-4 w-full p-4">
                             <button
-                                className="clash-button"
-                                style={{
-                                    height: '45px',
-                                    width: '150px',
-                                    minWidth: '48px',
-                                    fontSize: '1rem',
-                                    borderRadius: '0.5rem',
-                                    margin: '20px'
-                                }}
+                                className="clash-button-small"
+                                style={{ height: '50px', fontSize: '1.25rem', minWidth: '120px' }}
                                 onClick={() => setIsDialogOpen(true)}
                             >
                                 Create Group
                             </button>
                             <button
-                                className="clash-button"
-                                style={{
-                                    height: '45px',
-                                    width: '150px',
-                                    minWidth: '48px',
-                                    fontSize: '1rem',
-                                    borderRadius: '0.5rem',
-                                    margin: '20px'
-                                }}
+                                className="clash-button-small"
+                                style={{ height: '50px', fontSize: '1.25rem', minWidth: '40px' }}
                                 onClick={() => {
                                     setIsInvitesDialogOpen(true);
                                     fetchInvites();
