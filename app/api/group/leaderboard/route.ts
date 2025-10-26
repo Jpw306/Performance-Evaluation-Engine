@@ -43,7 +43,7 @@ export async function GET(request: Request) {
               try {
                 if (user.clashRoyaleTag) {
                   const clashRes = await fetch(
-                    `http://localhost:3000/api/get-player?userId=${encodeURIComponent(
+                    `${process.env.NEXTAUTH_URL}/api/get-player?userId=${encodeURIComponent(
                       user.clashRoyaleTag
                     )}`,
                     {
@@ -69,7 +69,7 @@ export async function GET(request: Request) {
               try {
                 if (group.repositoryUrl && group.repositoryUrl.trim()) {
                   const commitRes = await fetch(
-                    `http://localhost:3000/api/get-commits?author=${encodeURIComponent(
+                    `${process.env.NEXTAUTH_URL}/api/get-commits?author=${encodeURIComponent(
                       username
                     )}&repositoryUrl=${encodeURIComponent(
                       group.repositoryUrl

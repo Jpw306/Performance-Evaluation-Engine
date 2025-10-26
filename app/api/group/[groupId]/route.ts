@@ -60,7 +60,7 @@ export async function GET(
           try {
             // Use the get-winrate endpoint instead with specific username
             const winrateRes = await fetch(
-              `http://localhost:3000/api/get-winrate?username=${encodeURIComponent(username)}`,
+              `${process.env.NEXTAUTH_URL}/api/get-winrate?username=${encodeURIComponent(username)}`,
               { 
                 headers: { 
                   'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ export async function GET(
           }        try {
           if (group.repositoryUrl && group.repositoryUrl.trim()) {
             const commitRes = await fetch(
-              `http://localhost:3000/api/get-commits?author=${encodeURIComponent(username)}&repositoryUrl=${encodeURIComponent(
+              `${process.env.NEXTAUTH_URL}/api/get-commits?author=${encodeURIComponent(username)}&repositoryUrl=${encodeURIComponent(
                 group.repositoryUrl
               )}&token=${encodeURIComponent(accessToken)}`
             );
