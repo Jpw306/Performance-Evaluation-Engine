@@ -7,13 +7,13 @@
     Returns win rate as a number between 0 and 1
 */
 
-import { NextResponse } from "next/server";
-import { CLASH_API_BASE_URL } from "@/lib/constants";
-import { transformBattleLogs } from "@/lib/clash_api_helper_functions";
+import { NextResponse } from 'next/server';
+import { CLASH_API_BASE_URL } from '@/lib/constants';
+import { transformBattleLogs } from '@/lib/clash_api_helper_functions';
 import dbConnect from '@/lib/mongodb';
 import { User } from '@/models/backend/user';
-import { getServerSession } from "next-auth";
-import { authOptions } from "../auth/[...nextauth]/route";
+import { getServerSession } from 'next-auth';
+import { authOptions } from '../auth/[...nextauth]/route';
 
 interface SessionUser {
   githubUsername?: string;
