@@ -56,7 +56,7 @@ const DashTemp = () => {
         if(user?.githubUsername) {
             setGithubLoading(true);
             try {
-                const response = await fetch('/api/github', {
+                const response = await fetch('/api/get-commits', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
