@@ -1,33 +1,42 @@
-'use client';
-
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
-  import './globals.css';
-import { SessionProvider } from 'next-auth/react';
+import localFont from 'next/font/local';
+import './globals.css';
+import Providers from '../components/Providers';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
+// Load Clash Royale (Supercell) fonts
+const clashHeadline = localFont({
+  src: [
+    {
+      path: '../public/fonts/Clash_Bold.otf',
+      weight: '700',
+      style: 'normal',
+    },
+    {
+      path: '../public/fonts/Clash_Regular.otf',
+      weight: '400',
+      style: 'normal',
+    },
+  ],
+  display: 'swap',
+  variable: '--font-clash',
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
+export const metadata: Metadata = {
+  title: 'Performance Evaluation Engine',
+  description: 'Clash Royale x Productivity Compass',
+};
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <SessionProvider>
+      <body className={`${clashHeadline.variable} antialiased bg-clash-black text-clash-light`}>
+        <Providers>
           {children}
-        </SessionProvider>
+        </Providers>
       </body>
     </html>
   );

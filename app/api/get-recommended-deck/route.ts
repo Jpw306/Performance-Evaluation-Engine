@@ -19,11 +19,11 @@ export async function GET(request : Request) {
     // get user id from url
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get('userId');
-    if (!userId) return NextResponse.json({error: "Missing userId in parameters!"}, {status: 400});
+    if (!userId) return NextResponse.json({error: 'Missing userId in parameters!'}, {status: 400});
 
     // get clash id from database
     const tempClashId = process.env.TEMP_CLASH_ID; // TODO: replace this with permanent solution
-    if (!tempClashId) return NextResponse.json({error: "Missing ClashID Tag!"}, {status: 400});
+    if (!tempClashId) return NextResponse.json({error: 'Missing ClashID Tag!'}, {status: 400});
 
     // forward to clash api - get user battlelog
     const res = await fetch(`${CLASH_API_BASE_URL}/players/${encodeURIComponent(tempClashId)}/battlelog`, {
