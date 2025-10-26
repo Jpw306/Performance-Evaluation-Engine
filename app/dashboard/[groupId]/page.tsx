@@ -40,21 +40,21 @@ export default function DashboardPage() {
   const [groupData, setGroupData] = useState<GroupData | null>(null);
 
   useEffect(() => {
-    const fetchGroup = async () => {
-      if (!groupId) return;
-        try {
-          const res = await fetch(`/api/group/${groupId}`);
-          if (!res.ok) throw new Error('Failed to fetch group');
-          const data = await res.json();
-          console.log('Fetched group data:', data);
-          setMembers(data.people || []);
-          setGroupData(data);
-        } catch (err) {
-          console.error(err);
-        } finally {
-          setLoading(false);
-        }
-    };
+  const fetchGroup = async () => {
+    if (!groupId) return;
+    try {
+      const res = await fetch(`/api/group/${groupId}`);
+      if (!res.ok) throw new Error('Failed to fetch group');
+      const data = await res.json();
+      setMembers(data.members || []);
+      setGroupData(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
     fetchGroup();
   }, [groupId]);
 
