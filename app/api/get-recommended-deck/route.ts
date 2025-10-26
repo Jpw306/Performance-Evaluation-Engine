@@ -11,7 +11,6 @@ import { NextResponse } from "next/server";
 import { CLASH_API_BASE_URL } from "@/lib/constants";
 import { GoogleGenAI } from "@google/genai";
 import { sliceAndTransform, transformBattleLogs } from "@/lib/clash_api_helper_functions";
-import { parse } from "path";
 
 const ai = new GoogleGenAI({});
 
@@ -51,5 +50,5 @@ export async function GET(request : Request) {
         contents: fullPrompt, 
     });
 
-    return NextResponse.json({error: response.text}, {status: 200});
+    return NextResponse.json({response: response.text}, {status: 200});
 }
