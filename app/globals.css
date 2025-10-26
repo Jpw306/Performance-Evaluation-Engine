@@ -350,6 +350,13 @@ p, span, li {
   }
 }
 
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px) rotate(-1deg); }
+  50% { transform: translateX(2px) rotate(1deg); }
+  75% { transform: translateX(-2px) rotate(-1deg); }
+}
+
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

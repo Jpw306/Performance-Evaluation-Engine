@@ -11,8 +11,12 @@ interface Member {
   winRate: number;
 }
 
+import { GroupContext } from '@/lib/types';
+import { dangerZone } from '@/lib/clash_helper_functions';
+
 interface Props {
   members: Member[];
+  groupContext: GroupContext | null;
 }
 
 interface TooltipProps {
@@ -37,13 +41,33 @@ function CustomTooltip({ active, payload }: TooltipProps) {
 
 // Custom shape to render user avatars with a yellow border
 function CustomScatterShape(props: any) {
-  const { cx, cy, payload } = props;
+  const { cx, cy, payload, usersInDanger } = props;
   const avatar = payload.avatar;
+  const isInDanger = usersInDanger.includes(payload.githubUsername);
 
   return (
     <svg x={cx - 20} y={cy - 20} width={40} height={40}>
-      {/* Yellow border */}
-      <circle cx="20" cy="20" r="20" fill="none" stroke="#FFD700" strokeWidth="2" />
+      {/* Colored border based on danger status */}
+      <circle 
+        cx="20" 
+        cy="20" 
+        r="20" 
+        fill="none" 
+        stroke={isInDanger ? "#ef4444" : "#FFD700"} 
+        strokeWidth="2" 
+      />
+      {isInDanger && (
+        <circle 
+          cx="20" 
+          cy="20" 
+          r="20" 
+          fill="none" 
+          stroke="#ef4444" 
+          strokeWidth="2" 
+          opacity="0.5"
+          className="animate-pulse"
+        />
+      )}
       <defs>
         <clipPath id={`circleClip-${payload.id}`}>
           <circle cx="20" cy="20" r="18" />
@@ -60,7 +84,10 @@ function CustomScatterShape(props: any) {
   );
 }
 
-export default function CompassGrid({ members }: Props) {
+export default function CompassGrid({ members, groupContext }: Props) {
+  // Get list of users in danger zone
+  const usersInDanger = useMemo(() => groupContext ? dangerZone(groupContext) : [], [groupContext]);
+
   const data = useMemo(() => {
     return members.map((m) => ({
       id: m.id, // Include unique ID for clipPath
@@ -69,6 +96,7 @@ export default function CompassGrid({ members }: Props) {
       winRate: typeof m.winRate === 'number' ? Number(m.winRate.toFixed(1)) : 0,
       score: m.commits + (typeof m.winRate === 'number' ? m.winRate : 0),
       avatar: m.photoIcon, // Include the avatar URL
+      githubUsername: m.githubUsername, // Add githubUsername for danger zone check
     }));
   }, [members]);
 
@@ -112,7 +140,10 @@ export default function CompassGrid({ members }: Props) {
             }}
           />
           <Tooltip content={CustomTooltip} cursor={{ strokeDasharray: '3 3', stroke: '#FFD700' }} />
-          <Scatter data={data} shape={<CustomScatterShape />} />
+          <Scatter 
+            data={data} 
+            shape={(props) => <CustomScatterShape {...props} usersInDanger={usersInDanger} />} 
+          />
         </ScatterChart>
       </ResponsiveContainer>
     </div>
