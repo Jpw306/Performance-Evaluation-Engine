@@ -52,40 +52,33 @@ export default function Profile() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] bg-cover bg-center bg-no-repeat flex items-center justify-center">
-        <div className="bg-gradient-to-b from-slate-900/95 to-slate-800/95 backdrop-blur-sm rounded-3xl shadow-xl p-8 border border-clash-blue/50">
-          <div className="flex flex-col items-center">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-clash-gold mb-4"></div>
-            <h2 className="text-xl font-bold text-clash-light">Loading...</h2>
-          </div>
-        </div>
+      <div className="min-h-screen flex items-center justify-center text-clash-light font-clash text-lg bg-[url('/backgrounds/ClashBackground.png')] bg-cover bg-center">
+        Loading profile...
       </div>
     );
   }
 
   if (error || !user) {
     return (
-      <div className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] bg-cover bg-center bg-no-repeat flex items-center justify-center">
-        <div className="bg-gradient-to-b from-red-900/95 to-slate-800/95 backdrop-blur-sm rounded-3xl shadow-xl p-8 border border-red-500/50">
-          <div className="flex flex-col items-center text-center">
-            <h2 className="text-xl font-bold text-red-400 mb-4">Error Loading Profile</h2>
-            <p className="text-clash-light mb-4">{error || 'Failed to load user data'}</p>
-            <button
-              onClick={() => router.push('/')}
-              className="px-6 py-2 bg-gradient-to-r from-clash-blue to-clash-gold text-white font-bold rounded-lg hover:scale-105 transform transition"
-            >
-              Go Back
-            </button>
-          </div>
+      <div className="min-h-screen flex items-center justify-center text-clash-light font-clash text-lg bg-[url('/backgrounds/ClashBackground.png')] bg-cover bg-center">
+        <div className="text-center">
+          <h2 className="text-xl font-bold text-clash-gold mb-4">Error Loading Profile</h2>
+          <p className="text-clash-light mb-4">{error || 'Failed to load user data'}</p>
+          <button
+            onClick={() => router.push('/')}
+            className="clash-button"
+          >
+            Go Back
+          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] bg-cover bg-center bg-no-repeat flex items-center justify-center p-4">
-      <div className="bg-gradient-to-b from-slate-900/95 to-slate-800/95 backdrop-blur-sm rounded-3xl shadow-xl p-8 w-full max-w-md border border-clash-blue/50">
-        <div className="flex flex-col items-center mb-6">
+    <div className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] bg-cover bg-center text-clash-white p-8 font-text flex flex-col items-center justify-center">
+      <div className="w-1/2 max-w-md">
+        <div className="flex flex-col items-center mb-8">
           {/* User Avatar */}
           <div className="relative mb-4">
             <Image
@@ -98,19 +91,19 @@ export default function Profile() {
           </div>
           
           {/* User Name */}
-          <h1 className="text-2xl font-bold text-clash-light mb-2">
+          <h1 className="font-clash text-4xl uppercase tracking-tightest text-clash-gold mb-2 text-center">
             Welcome, {user.name}!
           </h1>
           
-          <p className="text-clash-gold text-sm text-center">
+          <p className="text-clash-light text-center mb-8">
             Enter your Clash Royale tag to get started
           </p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-10">
           <div>
-            <label htmlFor="clashRoyaleTag" className="block text-clash-gold font-semibold mb-2">
+            <label htmlFor="clashRoyaleTag" className="block text-clash-gold font-semibold mb-3 text-xl">
               Clash Royale Tag
             </label>
             <input
@@ -118,25 +111,27 @@ export default function Profile() {
               id="clashRoyaleTag"
               value={clashRoyaleTag || user?.clashRoyaleTag || ''}
               onChange={(e) => setClashRoyaleTag(e.target.value)}
-              className="w-full p-3 rounded-lg bg-slate-800 text-clash-light border border-clash-blue focus:ring-2 focus:ring-clash-gold focus:outline-none placeholder-slate-400"
+              className="w-full py-8 px-6 my-10 rounded-lg bg-clash-dark text-clash-light border-2 border-clash-blue focus:ring-2 focus:ring-clash-gold focus:outline-none placeholder-clash-gray text-xl"
               placeholder="#YourTag"
               disabled={isSubmitting}
             />
           </div>
           
           {submitError && (
-            <p className="text-red-400 text-sm bg-red-900/20 p-2 rounded-lg border border-red-500/30">
+            <p className="text-red-400 text-sm bg-red-900/20 p-3 rounded-lg border border-red-500/30">
               {submitError}
             </p>
           )}
           
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full py-3 bg-gradient-to-r from-clash-blue to-clash-gold text-white font-bold rounded-lg hover:scale-105 transform transition disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-          >
-            {isSubmitting ? 'Updating...' : 'Save Clash Royale Tag'}
-          </button>
+          <div className="pt-8">
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="clash-button w-full disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSubmitting ? 'Updating...' : 'Save Tag'}
+            </button>
+          </div>
         </form>
       </div>
     </div>
