@@ -5,6 +5,7 @@ import { useParams } from 'next/navigation';
 import { useUser } from '@/lib/useUser';
 import CompassGrid from '@/components/CompassGrid';
 import Leaderboard from '@/components/LeaderboardTable';
+import NavBar from '@/components/NavBar';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -127,6 +128,7 @@ export default function DashboardPage() {
   return (
     <>
       <Toaster position="top-right" />
+      <NavBar />
       <main className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] bg-cover bg-center text-clash-white p-8 font-text flex flex-col items-center">
         <h1 className="font-clash text-4xl uppercase tracking-tightest text-clash-gold mb-6">
           {user?.name}&apos;s Group Dashboard
