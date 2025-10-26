@@ -7,13 +7,13 @@ export default function DashboardPage() {
   return (
     <main className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] text-clash-white p-8 font-text">
       <NavBar />
-      <div className="max-w-6xl mx-auto grid grid-cols-12 gap-6">
+      <div className="max-w-6xl mx-auto grid grid-cols-16 gap-6">
         <section className="col-span-8 p-6 rounded-2xl shadow-md">
           <h2 className="text-3xl font-headline text-clash-gold mb-4 drop-shadow">Team Compass</h2>
           <CompassGrid />
         </section>
 
-        <aside className="col-span-4">
+        <aside className="col-span-8">
           <section className="bg-clash-blue p-4 rounded-2xl mb-6 shadow">
             <h3 className="text-lg font-headline text-clash-gold mb-3">Leaderboard</h3>
             <LeaderboardTable />
