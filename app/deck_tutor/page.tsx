@@ -43,7 +43,7 @@ Let's get started!
   }
   const getDeckRecommendation = async () => {
     console.log('Button clicked, user:', user);
-    if (!user || !user.id) {
+    if (!user || !user.githubUsername) {
       console.log('No user found or missing user ID');
       setTutorResponse(`# Error
 Please make sure you have set up your Clash Royale account in your profile first.`);
