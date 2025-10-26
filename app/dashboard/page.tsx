@@ -76,7 +76,6 @@ const DashTemp = () => {
                 }
             }
             catch(error) {
-                console.log('Error getting GitHub stats:', error);
                 setGithubData(null);
             }
             finally {

@@ -1,6 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '../auth/[...nextauth]/route';
 
 interface Commit {
   author?: {
@@ -9,7 +7,7 @@ interface Commit {
 }
 
 const fetchCommits = async (repo: string, token: string) => {
-  const url = `https://api.github.com/repos/${repo}/commits`;
+  const url = `https://api.github.com/repos/${repo.replace('https://github.com/', '')}/commits`;
   const headers = {
     Authorization: `Bearer ${token}`,
     Accept: 'application/vnd.github+json',
@@ -40,7 +38,6 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const author = searchParams.get('author');
-    const session = await getServerSession(authOptions);
     const repositoryUrl = searchParams.get('repositoryUrl');
     const token = searchParams.get('token');
 

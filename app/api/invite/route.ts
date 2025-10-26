@@ -75,15 +75,8 @@ export async function POST(request: NextRequest)
       return NextResponse.json({ error: 'GitHub access token not found' }, { status: 400 });
 
     const body = await request.json();
-    console.log('Invite API received body:', body);
     
     const { githubUsername: invitedGithubUsername, githubUrl, groupName } = body;
-    
-    console.log('Extracted values:', {
-      invitedGithubUsername,
-      githubUrl,
-      groupName
-    });
 
     if (!invitedGithubUsername || !githubUrl || !groupName)
       return NextResponse.json({ error: 'GitHub username, repository URL, and group name are required' }, { status: 400 });

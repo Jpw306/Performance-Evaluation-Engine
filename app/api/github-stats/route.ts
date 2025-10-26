@@ -16,23 +16,18 @@ export async function GET() {
   try {
     const session = await getServerSession(authOptions);
     
-    if (!session || !session.user) {
+    if (!session || !session.user)
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
-    }
 
     const user = session.user as SessionUser;
     const githubUsername = user.githubUsername;
     const accessToken = (session as { accessToken?: string })?.accessToken;
 
-    if (!githubUsername) {
+    if (!githubUsername)
       return NextResponse.json({ error: 'GitHub username not found' }, { status: 400 });
-    }
 
-    if (!accessToken) {
+    if (!accessToken)
       return NextResponse.json({ error: 'GitHub access token not found' }, { status: 400 });
-    }
-
-    console.log('Fetching GitHub data for user:', githubUsername);
 
     // Get user's repositories first
     const reposResponse = await fetch(
@@ -55,9 +50,7 @@ export async function GET() {
     }
 
     const repos = await reposResponse.json();
-    console.log(`Found ${repos.length} repositories`);
 
-    // Count commits from the last 30 days across all repositories
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
     const since = thirtyDaysAgo.toISOString();
@@ -65,7 +58,6 @@ export async function GET() {
     let totalCommits = 0;
     const repoCommitCounts: RepoCommitCount[] = [];
 
-    // Check up to 10 most recently updated repos to avoid rate limits
     const reposToCheck = repos.slice(0, 10);
 
     for (const repo of reposToCheck) {
@@ -93,16 +85,11 @@ export async function GET() {
             });
           }
           
-          console.log(`${repo.name}: ${commitCount} commits`);
-        } else {
-          console.log(`Failed to fetch commits for ${repo.name}:`, commitsResponse.status);
         }
       } catch (error) {
         console.error(`Error fetching commits for ${repo.name}:`, error);
       }
     }
-
-    console.log(`Total commits in last 30 days: ${totalCommits}`);
 
     return NextResponse.json({
       username: githubUsername,

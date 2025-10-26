@@ -17,7 +17,7 @@ interface Props {
 export default function LeaderboardTable({ members }: Props) {
   const sorted = [...members].sort(
     (a, b) =>
-      b.commits + b.winRate * 100 - (a.commits + a.winRate * 100)
+      b.commits + b.winRate - (a.commits + a.winRate)
   );
 
   return (
@@ -55,7 +55,7 @@ export default function LeaderboardTable({ members }: Props) {
                 <span>{p.name}</span>
               </td>
               <td className="p-3">{p.commits}</td>
-              <td className="p-3">{(p.winRate * 100).toFixed(1)}%</td>
+              <td className="p-3">{(p.winRate).toFixed(2)}%</td>
             </tr>
           ))}
         </tbody>

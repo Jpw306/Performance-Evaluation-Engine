@@ -44,13 +44,18 @@ export default function DashboardPage() {
   const fetchGroup = async () => {
     if (!groupId) return;
     try {
-      const res = await fetch(`/api/group/${groupId}`);
+      const res = await fetch(`/api/group/${groupId}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
+        }
+      });
       if (!res.ok) throw new Error('Failed to fetch group');
       const data = await res.json();
       setMembers(data.members || []);
       setGroupData(data);
     } catch (err) {
-      console.error(err);
     } finally {
       setLoading(false);
     }
@@ -69,25 +74,9 @@ export default function DashboardPage() {
     
     if (!groupData) {
       toast.error('Group data not available');
-      console.error('Group data is null or undefined:', groupData);
       return;
     }
-    
-    console.log('Group data before sending invite:', groupData);
-    console.log('Group data fields:', {
-      name: groupData.name,
-      repositoryUrl: groupData.repositoryUrl,
-      hasName: !!groupData.name,
-      hasRepositoryUrl: !!groupData.repositoryUrl
-    });
-    
     setIsInviting(true);
-    
-    console.log('Sending invite with data:', {
-      githubUsername: inviteUsername.trim(),
-      githubUrl: groupData.repositoryUrl,
-      groupName: groupData.name
-    });
     
     try {
       const response = await fetch('/api/invite', {
@@ -101,7 +90,6 @@ export default function DashboardPage() {
           groupName: groupData.name
         }),
       });
-      
       if (response.ok) {
         setInviteUsername('');
         setIsInviteDialogOpen(false);
@@ -111,7 +99,6 @@ export default function DashboardPage() {
         toast.error(`Failed to send invitation: ${error.error || 'Unknown error'}`);
       }
     } catch (error) {
-      console.error('Error sending invitation:', error);
       toast.error('Network error. Please try again.');
     } finally {
       setIsInviting(false);
@@ -132,9 +119,7 @@ export default function DashboardPage() {
       <main className="min-h-screen bg-[url('/backgrounds/ClashBackground.png')] bg-cover bg-center text-clash-white p-8 font-text flex flex-col items-center">
         <h1 className="font-clash text-4xl uppercase tracking-tightest text-clash-gold mb-6">
           {user?.name}&apos;s Group Dashboard
-        </h1>
-
-        {/* Invite Button */}
+        </h1>        
         <div className="mb-8">
           <Dialog open={isInviteDialogOpen} onOpenChange={setIsInviteDialogOpen}>
             <DialogTrigger asChild>
