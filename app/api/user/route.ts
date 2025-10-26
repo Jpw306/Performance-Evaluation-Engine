@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import { User } from '@/models/backend/user';
@@ -43,10 +44,11 @@ export async function POST(request: NextRequest)
   user.avatarUrl = avatarUrl || user.avatarUrl;
   user.name = name || user.name;
 
-  let groups = await Group.find({ people: { $in: [githubUsername] } }).catch(() => []);
+  let groups: any[] = await Group.find({}).lean();
+  groups = groups.filter(g => g.people.includes(githubUsername));
 
   console.log('Fetched groups:', groups);
-  
+
   groups = groups.map(g => ({
     id: g._id,
     name: g.name,
