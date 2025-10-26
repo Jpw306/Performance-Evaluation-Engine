@@ -42,10 +42,8 @@ export async function GET(request: Request) {
               // --- Clash Royale stats ---
               try {
                 if (user.clashRoyaleTag) {
-                  const clashRes = await fetch(
-                    `${process.env.NEXTAUTH_URL}/api/get-player?userId=${encodeURIComponent(
-                      user.clashRoyaleTag
-                    )}`,
+                  const winrateRes = await fetch(
+                    `${process.env.NEXTAUTH_URL}/api/get-winrate`,
                     {
                       headers: {
                         'Content-Type': 'application/json',
@@ -53,15 +51,13 @@ export async function GET(request: Request) {
                       },
                     }
                   );
-                  if (clashRes.ok) {
-                    const clashData = await clashRes.json();
-                    const wins = clashData.wins ?? clashData.stats?.wins ?? 0;
-                    const losses = clashData.losses ?? clashData.stats?.losses ?? 0;
-                    const total = wins + losses;
-                    if (total > 0) member.winRate = parseFloat(((wins / total) * 100).toFixed(1));
+                  if (winrateRes.ok) {
+                    const winrateData = await winrateRes.json();
+                    member.winRate = winrateData.winRate || 0;
                   }
                 }
               } catch (err) {
+                console.error('Error fetching winrate:', err);
                 member.winRate = 0;
               }
 
