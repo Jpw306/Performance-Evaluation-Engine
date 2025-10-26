@@ -5,7 +5,7 @@ import NavBar from '@/components/NavBar';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useUser } from '@/lib/useUser';
@@ -38,7 +38,6 @@ const GroupCard: React.FC<GroupCardProps> = ({ group }) => {
 };
 
 const DashTemp = () => {
-
     const { user, refetchUser } = useUser();
     
     const [githubData, setGithubData] = React.useState<any>(null);
@@ -217,71 +216,89 @@ const DashTemp = () => {
                                 {getClashDisplayText()}
                             </p>
                         </div>
+                        <div className="flex flex-row gap-4 w-full px-4 pb-4">
+                            <button
+                                className="clash-button"
+                                style={{
+                                    height: '45px',
+                                    minWidth: '120px',
+                                    fontSize: '1.2rem',
+                                    borderRadius: '0.5rem'
+                                }}
+                                onClick={() => setIsDialogOpen(true)}
+                            >
+                                Create Group
+                            </button>
+                            <button
+                                className="clash-button"
+                                style={{
+                                    height: '45px',
+                                    minWidth: '120px',
+                                    fontSize: '1.2rem',
+                                    borderRadius: '0.5rem'
+                                }}
+                                onClick={() => console.log('Button 2 clicked')}
+                            >
+                                View Invites
+                            </button>
+                        </div>
                     </div>
                     
                     {/* Group Cards Section - 2/3 width */}
                     <div className='w-2/3'>
-                        {/* Create Group Button */}
-                        <div className='mb-6'>
-                            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                                <DialogTrigger asChild>
-                                    <Button className='bg-clash-blue hover:bg-clash-blue/80 text-white'>
-                                        Create Group
-                                    </Button>
-                                </DialogTrigger>
-                                <DialogContent className='bg-clash-dark border-clash-blue'>
-                                    <DialogHeader>
-                                        <DialogTitle className='text-clash-white'>Create New Group</DialogTitle>
-                                    </DialogHeader>
-                                    <form onSubmit={handleCreateGroup} className='space-y-4'>
-                                        <div>
-                                            <Label htmlFor='groupName' className='text-clash-white'>
-                                                Group Name
-                                            </Label>
-                                            <Input
-                                                id='groupName'
-                                                type='text'
-                                                value={groupName}
-                                                onChange={(e) => setGroupName(e.target.value)}
-                                                placeholder='Enter group name'
-                                                className='bg-clash-dark border-clash-blue text-clash-white'
-                                                required
-                                            />
-                                        </div>
-                                        <div>
-                                            <Label htmlFor='repoUrl' className='text-clash-white'>
-                                                Repository URL
-                                            </Label>
-                                            <Input
-                                                id='repoUrl'
-                                                type='url'
-                                                value={repoUrl}
-                                                onChange={(e) => setRepoUrl(e.target.value)}
-                                                placeholder='https://github.com/username/repository'
-                                                className='bg-clash-dark border-clash-blue text-clash-white'
-                                                required
-                                            />
-                                        </div>
-                                        <div className='flex justify-end space-x-2'>
-                                            <Button 
-                                                type='button' 
-                                                variant='outline' 
-                                                onClick={() => setIsDialogOpen(false)}
-                                                className='border-clash-blue text-clash-white hover:bg-clash-blue/20'
-                                            >
-                                                Cancel
-                                            </Button>
-                                            <Button 
-                                                type='submit'
-                                                className='bg-clash-blue hover:bg-clash-blue/80 text-white'
-                                            >
-                                                Create Group
-                                            </Button>
-                                        </div>
-                                    </form>
-                                </DialogContent>
-                            </Dialog>
-                        </div>
+                        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                            <DialogContent className='clash-dialog'>
+                                <DialogHeader className='clash-dialog-header'>
+                                    <DialogTitle className='clash-dialog-title'>Create New Group</DialogTitle>
+                                </DialogHeader>
+                                <form onSubmit={handleCreateGroup} className='space-y-4'>
+                                    <div>
+                                        <Label htmlFor='groupName' className='text-clash-white'>
+                                            Group Name
+                                        </Label>
+                                        <Input
+                                            id='groupName'
+                                            type='text'
+                                            value={groupName}
+                                            onChange={(e) => setGroupName(e.target.value)}
+                                            placeholder='Enter group name'
+                                            className='bg-clash-dark border-clash-blue text-clash-white'
+                                            required
+                                        />
+                                    </div>
+                                    <div>
+                                        <Label htmlFor='repoUrl' className='text-clash-white'>
+                                            Repository URL
+                                        </Label>
+                                        <Input
+                                            id='repoUrl'
+                                            type='url'
+                                            value={repoUrl}
+                                            onChange={(e) => setRepoUrl(e.target.value)}
+                                            placeholder='https://github.com/username/repository'
+                                            className='bg-clash-dark border-clash-blue text-clash-white'
+                                            required
+                                        />
+                                    </div>
+                                    <div className='flex justify-end space-x-2'>
+                                        <Button 
+                                            type='button' 
+                                            variant='outline' 
+                                            onClick={() => setIsDialogOpen(false)}
+                                            className='border-clash-blue text-clash-white hover:bg-clash-blue/20'
+                                        >
+                                            Cancel
+                                        </Button>
+                                        <Button 
+                                            type='submit'
+                                            className='bg-clash-blue hover:bg-clash-blue/80 text-white'
+                                        >
+                                            Create Group
+                                        </Button>
+                                    </div>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
 
                         {user?.groups.length || 0 > 0 ? (
                             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4'>

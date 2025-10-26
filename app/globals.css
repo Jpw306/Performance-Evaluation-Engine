@@ -197,6 +197,69 @@ p, span, li {
      1px  1px 0 var(--clash-gold-dark);
 }
 
+/* Clash Royale Dialog/Popup Component */
+.clash-dialog {
+  /* Size constraints */
+  max-width: 400px !important;
+  min-height: 450px;
+  width: 90vw;
+  
+  /* Styling */
+  background: linear-gradient(
+    180deg,
+    var(--clash-dark) 0%,
+    var(--clash-black) 100%
+  ) !important;
+  
+  /* Border & shadow effects */
+  border: 3px solid var(--clash-gold) !important;
+  box-shadow: 
+    0 0 20px rgba(255, 215, 0, 0.2),
+    0 10px 20px rgba(0, 0, 0, 0.4) !important;
+  
+  /* Animation */
+  animation: dialogAppear 0.3s ease-out;
+}
+
+.clash-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+@keyframes dialogAppear {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Dialog header styling */
+.clash-dialog-header {
+  border-bottom: 2px solid var(--clash-gold);
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.clash-dialog-title {
+  color: var(--clash-gold);
+  text-align: center;
+  font-size: 1.75rem;
+  text-shadow: 
+    -1px -1px 0 var(--clash-gold-dark),
+     1px -1px 0 var(--clash-gold-dark),
+    -1px  1px 0 var(--clash-gold-dark),
+     1px  1px 0 var(--clash-gold-dark);
+}
+
+/* Dialog content styling */
+.clash-dialog-content {
+  padding: 1.5rem;
+}
+
 /* Clash Royale Button Component — Modern Tailwind v4+ Syntax */
 
 /* -----------------------------
