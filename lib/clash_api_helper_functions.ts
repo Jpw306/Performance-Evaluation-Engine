@@ -15,8 +15,9 @@ function mapCardsToObject(cardArray: ApiCard[]): Record<string, number> {
 
 // get just the first 5 logs
 export function sliceRawLogs(rawJson: unknown): ApiBattleLog[] {
+    if (!Array.isArray(rawJson)) return [];
     const typedLogs = rawJson as ApiBattleLog[];
-    return typedLogs.slice(0, 5);
+    return typedLogs.slice(0, Math.min(5, typedLogs.length));
 }
 
 // turn the first 5 logs into shorter json (saves on tokens)
